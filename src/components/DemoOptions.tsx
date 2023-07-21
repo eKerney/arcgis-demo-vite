@@ -19,73 +19,89 @@ import ClassifySurface from './ClassifySurface';
 import CalculateSurface from './CalculateSurface';
 import SurfaceModel from './SurfaceModel';
 import { Tooltip } from '@mui/material';
-import logo from './common/ASLLogoStack.png'
+import logo from '../assets/ASLLogoStack.png'
 import ElevatePanel from "./ElevatePanel";
-import { DemoContext } from "../contexts/DemoContext";
-import { SurfaceContext } from "../contexts/Surface";
-import { RouteContext } from "../contexts/Route";
-import UploadAOIpanel from "./UploadAOIpanel";
+import { AppContext } from "../contexts/AppContext";
+// import { DemoContext } from "../contexts/DemoContext";
+// import { SurfaceContext } from "../contexts/Surface";
+// import { RouteContext } from "../contexts/Route";
+// import UploadAOIpanel from "./UploadAOIpanel";
 
+    // const [appContextState, setAppContextState] = useState<AppContextInterface>({
+    //     demoType: 'DEMO SELECT', 
+    //     demoPanel: 'DEMO PANEL', 
+    //     cameraLocation: locations['Los Angeles'],
+    //     availableLayers: [], 
+    //     fieldDomains: [], 
+    //     scoredFields: [], 
+    //     AOIgeometry: {}, 
+    //     basemap: 'dark-gray-vector',
+    //     waypointsGeometry: {},
+    //     surfaceResolution: 0,
+    // });
+    //
 export const DemoOptions = ({ demoState, onDemoSelect, secondaryCallback, scene, geometryCallback, elevateParamsCallback }) => {
     const drawerWidth = 70;
     const logoStyle = {marginTop: -40, marginBottom: 20, marginRight: 2}
-    const [demoType, setDemoType] = useState('');
-    const { surface } = useContext(SurfaceContext);
-    const { route } = useContext(RouteContext);
-    const { demo } = useContext(DemoContext);
+    // const [demoType, setDemoType] = useState('');
+    // const { surface } = useContext(SurfaceContext);
+    // const { route } = useContext(RouteContext);
+    // const { demo } = useContext(DemoContext);
     const [files, setFiles] = useState([]);
+    // newly added
+    const appContextData = useContext(AppContext);
+    const [appContextState, setAppContextState] = useState<AppContextInterface>(appContextData);
 
     //file upload working section
-  useEffect(() => {
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      const parsedData = JSON.parse(evt.target.result)
-      const blob = new Blob([JSON.stringify(parsedData)], { type: "application/json" });
-      // setElevateOptions( {...elevateOptions, GeoJSON: parsedData} )
-      return URL.createObjectURL(blob);
-    }
-    files.length ? reader.readAsText(files[0]) : console.log('none');
-  }, [files])
+    useEffect(() => {
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          const parsedData = JSON.parse(evt.target.result)
+          const blob = new Blob([JSON.stringify(parsedData)], { type: "application/json" });
+          // setElevateOptions( {...elevateOptions, GeoJSON: parsedData} )
+          return URL.createObjectURL(blob);
+        }
+        files.length ? reader.readAsText(files[0]) : console.log('none');
+    }, [files])
 
-  const handleFileUpload = (event) => setFiles(event)
-    
+  const handleFileUpload = (event: Event) => setFiles(event)
 
   const demoOptionsList = [
-    ...((demoState==='AirHub SkyPath' || demoState==='AirHub Elevate' || demoState==='AirHub MultiPath' 
-        || demoState==='AirHub ReadyToFly') ? [] : ['Select Data Surface']),
-    ...((demoState==='AirHub Elevate') ? [] : ['Classify Surface']),
-    ...((demoState==='AirHub Elevate') ? [] : ['Calculate Surface']),
-    ...((demoState==='AirHub Elevate') ? [] : ['Surface Data Model']),
+    ...((appContextData.demoType ==='AirHub SkyPath' || appContextData.demoType==='AirHub Elevate' || appContextData.demoType==='AirHub MultiPath' 
+        || appContextData.demoType==='AirHub ReadyToFly') ? [] : ['Select Data Surface']),
+    ...((appContextData.demoType==='AirHub Elevate') ? [] : ['Classify Surface']),
+    ...((appContextData.demoType==='AirHub Elevate') ? [] : ['Calculate Surface']),
+    ...((appContextData.demoType==='AirHub Elevate') ? [] : ['Surface Data Model']),
     ...['Refresh Map'],
     ...['Upload AOI Geometry']
   ];
   const demoIconsList = [
-    ...((demoState==='AirHub SkyPath' || demoState==='AirHub Elevate'|| demoState==='AirHub MultiPath' 
-        || demoState==='AirHub ReadyToFly') ? [] : [<DoneOutlineIcon className='icon' />]),
-    ...(demoState!=='AirHub Elevate' ? [<RuleIcon className='icon' />] : []),
-    ...(demoState!=='AirHub Elevate' ? [<CalculateIcon className='icon'/>] : []),
-    ...(demoState!=='AirHub Elevate' ? [<AccountTreeIcon className='icon'/>] : []),
+    ...((appContextData.demoType==='AirHub SkyPath' || appContextData.demoType==='AirHub Elevate'|| appContextData.demoType==='AirHub MultiPath' 
+        || appContextData.demoType==='AirHub ReadyToFly') ? [] : [<DoneOutlineIcon className='icon' />]),
+    ...(appContextData.demoType!=='AirHub Elevate' ? [<RuleIcon className='icon' />] : []),
+    ...(appContextData.demoType!=='AirHub Elevate' ? [<CalculateIcon className='icon'/>] : []),
+    ...(appContextData.demoType!=='AirHub Elevate' ? [<AccountTreeIcon className='icon'/>] : []),
     ...[<RefreshIcon className='icon'/>, <UploadFileOutlinedIcon className='icon'/>] 
   ];
 
     const renderControlPanel = () => {
         return (
-            demoType === 'REFRESH MAP' 
+            appContextData.demoPanel  === 'REFRESH MAP' 
             ? window.location.reload(false) 
-            : demo.demoType === 'AirHub ReadyToFly' && surface && route 
-            ? <ElevatePanel onDemoSelect={onDemoSelect} elevateParamsCallback={elevateParamsCallback}/> 
-            : demoType === 'SELECT DATA SURFACE' 
-            ? <SelectDataSurface geometryCallback={geometryCallback} demoState={demoState} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
-            : demoType === 'CLASSIFY SURFACE'
-            ? <ClassifySurface geometryCallback={geometryCallback} demoState={demoState} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
-            : demoType === 'CALCULATE SURFACE' 
-            ? <CalculateSurface geometryCallback={geometryCallback} demoState={demoState} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
-            : demoType === 'SURFACE DATA MODEL' 
-            ? <SurfaceModel geometryCallback={geometryCallback} demoState={demoState} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
-            : demoState === 'AirHub Elevate' 
-            ? <ElevatePanel onDemoSelect={onDemoSelect} elevateParamsCallback={elevateParamsCallback} /> 
-            : demoType === 'UPLOAD AOI GEOMETRY' 
-            ? <UploadAOIpanel onDemoSelect={onDemoSelect} elevateParamsCallback={elevateParamsCallback} geometryCallback={geometryCallback}/> 
+            // : appContextData.demoType === 'AirHub ReadyToFly' && surface && route 
+            // ? <ElevatePanel onDemoSelect={onDemoSelect} elevateParamsCallback={elevateParamsCallback}/> 
+            : appContextData.demoPanel === 'SELECT DATA SURFACE' 
+            ? <SelectDataSurface geometryCallback={geometryCallback} demoState={appContextData.demoType} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
+            // : appContextData.demoPanel === 'CLASSIFY SURFACE'
+            // ? <ClassifySurface geometryCallback={geometryCallback} demoState={appContextData.demoType} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
+            // : appContextData.demoPanel === 'CALCULATE SURFACE' 
+            // ? <CalculateSurface geometryCallback={geometryCallback} demoState={appContextData.demoType} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
+            // : appContextData.demoPanel === 'SURFACE DATA MODEL' 
+            // ? <SurfaceModel geometryCallback={geometryCallback} demoState={appContextData.demoType} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
+            // : appContextData.demoPanel === 'AirHub Elevate' 
+            // ? <ElevatePanel onDemoSelect={onDemoSelect} elevateParamsCallback={elevateParamsCallback} /> 
+            // : appContextData.demoPanel === 'UPLOAD AOI GEOMETRY' 
+            // ? <UploadAOIpanel onDemoSelect={onDemoSelect} elevateParamsCallback={elevateParamsCallback} geometryCallback={geometryCallback}/> 
             : <></>
         )    
     }

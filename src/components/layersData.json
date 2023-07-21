@@ -1,0 +1,54 @@
+{
+    "layers": [
+        "Slope","Terrain Ruggedness Index","Building Footprint","Roads","Temporary flight restrictions","Airspace schedule","Prisons","Streams","Balloonports",
+        "Daytime population data","Glideports","Ultralight","Schools","NRHP Location Points","State capitol buildings","NRHP Location Polygons","Stadium","FAA Obstacles",
+        "Power Plants","Military Training Routes","Railroad bridges","Bridges","Recreational Flyer Fixed Sites","Community advisories","Veteran health facilities",
+        "Helipads","Bodies of water","Child Care Centers","Railroad lines","Parks","Population Night","Hazards","Landscan Night Polygon","Landscan Day Polygon",
+        "Digital elevation model","Land use land cover","Convention centers and fairgrounds","Courthouses","Electric substations","EMS stations","Fire stations",
+        "Government buildings","Hospitals","Military facilities","Police stations","Sport venues","Transmission lines","Controlled Airspace Classification",
+        "Special use airspace","Full Time National Security UAS Flight Restriction","Colleges and universities","Washington DC Flight Restricted Zone",
+        "UAS Facility Management Flight Ceiling","Part Time National Security UAS Flight Restriction","Urgent care facilities","Wind farms","National Parks",
+        "Population in daytime","Railroad bridge overpass","FCC Antenna Structures","Emergency operation centers","ZIP codes","Landscan Night Point",
+        "Landscan Day Point","Airports","UAS Facility Management Flight Ceiling Primary","UAS Facility Management Flight Ceiling Secondary","US Building Footprints"],
+    "excludeClassify": [
+        "Slope","Terrain Ruggedness Index","Daytime population data","Population Night","Landscan Night Polygon","Landscan Day Polygon",
+        "Digital elevation model","Land use land cover","UAS Facility Management Flight Ceiling","Population in daytime","ZIP codes","Landscan Night Point",
+        "Landscan Day Point","UAS Facility Management Flight Ceiling Primary","UAS Facility Management Flight Ceiling Secondary"
+    ],
+    "excludeCalculate": [],
+    "problemLayers": [
+        "Airspace schedule","Building Footprint","US Building Footprints","Slope", "Terrain Ruggedness Index"
+    ],
+    "testedCalculate": ["Daytime population data","Digital elevation model","Landscan Day Point","Landscan Day Polygon","Landscan Night Point","Landscan Night Polygon",
+        "Population Night","Population in daytime", "UAS Facility Management Flight Ceiling","UAS Facility Management Flight Ceiling Primary",
+        "UAS Facility Management Flight Ceiling Secondary","ZIP codes"
+    ],
+    "tested": [
+        "Airports","Airspace schedule","Balloonports","Bodies of water","Bridges","Building Footprint","Child Care Centers","Colleges and universities",
+        "Community advisories","Controlled Airspace Classification","Convention centers and fairgrounds","Courthouses","EMS stations","Electric substations",
+        "Emergency operation centers","FAA Obstacles","FCC Antenna Structures","Fire stations","Full Time National Security UAS Flight Restriction","Glideports",
+        "Government buildings","Hazards","Helipads","Hospitals","Military Training Routes","Military facilities","NRHP Location Points","NRHP Location Polygons",
+        "National Parks","Parks","Part Time National Security UAS Flight Restriction","Police stations","Power Plants","Prisons","Railroad bridge overpass",
+        "Railroad bridges","Railroad lines","Recreational Flyer Fixed Sites","Roads","Schools","Special use airspace","Sport venues","Stadium","State capitol buildings",
+        "Streams","Temporary flight restrictions","Transmission lines","US Building Footprints","Ultralight","Urgent care facilities","Veteran health facilities",
+        "Washington DC Flight Restricted Zone","Wind farms"
+    ],
+    "sorted": [
+        "Airports","Airspace schedule","Balloonports","Bodies of water","Bridges","Building Footprint","Child Care Centers","Colleges and universities",
+        "Community advisories","Controlled Airspace Classification","Convention centers and fairgrounds","Courthouses","EMS stations","Electric substations",
+        "Emergency operation centers","FAA Obstacles","FCC Antenna Structures","Fire stations","Full Time National Security UAS Flight Restriction","Glideports",
+        "Government buildings","Hazards","Helipads","Hospitals","Military Training Routes","Military facilities","NRHP Location Points","NRHP Location Polygons",
+        "National Parks","Parks","Part Time National Security UAS Flight Restriction","Police stations","Power Plants","Prisons","Railroad bridge overpass",
+        "Railroad bridges","Railroad lines","Recreational Flyer Fixed Sites","Roads","Schools","Special use airspace","Sport venues","Stadium","State capitol buildings",
+        "Streams","Temporary flight restrictions","Transmission lines","US Building Footprints","Ultralight","Urgent care facilities",
+        "Veteran health facilities","Washington DC Flight Restricted Zone","Wind farms"
+    ],
+    "valueCalcLayers": [
+        "Daytime population data","Population Night","Landscan Night Polygon","Landscan Day Polygon","Digital elevation model","Population in daytime",
+        "ZIP codes","Landscan Night Point","Landscan Day Point"
+    ],
+    "domainSelectLayers": [
+        "Roads","Land use land cover","UAS Facility Management Flight Ceiling","UAS Facility Management Flight Ceiling Primary",
+        "UAS Facility Management Flight Ceiling Secondary"
+    ]
+}

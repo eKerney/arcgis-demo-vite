@@ -7,10 +7,9 @@ import { MapContextInterface } from "../types";
 export const SketchWidget = ({ geometryCallback, sketchStateCallback }) => {
     const mapContextData = useContext(MapContext);
     const appContextData = useContext(AppContext);
-    
+
     const renderSketchWidget = useCallback(() => {
         if (mapContextData.view.ui) {
-            console.log('mapContextView', mapContextData.view.ui)
             mapContextData.view.when(() => {
                 const sketch = new Sketch({
                     layer: mapContextData.graphicsLayer,
@@ -37,7 +36,7 @@ export const SketchWidget = ({ geometryCallback, sketchStateCallback }) => {
         //     : scene && renderSketchWidget()
         // console.log('mapContextData in sketch')
         // console.log(mapContextData)
-        mapContextData.view && renderSketchWidget()
+        mapContextData.scene && renderSketchWidget()
     }, [mapContextData.scene])    
     return <></>
 }

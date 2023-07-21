@@ -29,10 +29,10 @@ export interface AppContextInterface {
 }
 
 export interface MapContextInterface {
-    scene?: Object;
-    view?: Object;
-    sketch?: Object;
-    graphicsLayer?: Object;
+    scene?: __esri.WebScene;
+    view?: __esri.View;
+    sketch?: __esri.Sketch;
+    graphicsLayer?: __esri.GraphicsLayer;
 }
 
 

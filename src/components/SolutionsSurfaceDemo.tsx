@@ -1,11 +1,12 @@
 import { useEffect, useState, useContext } from "react";
 import SceneMap from './SceneMap';
 import SketchWidget from "./SketchWidget";
-// import SurfaceProvider from "../contexts/Surface";
-// import HexaGraph from "./HexaGraph";
 import { AppContext } from "../contexts/AppContext";
 import { MapContext } from "../contexts/MapContext";
 import { AppContextInterface, MapContextInterface } from "../types";
+import DemoOptions from "./DemoOptions";
+// import SurfaceProvider from "../contexts/Surface";
+// import HexaGraph from "./HexaGraph";
 
 export const SolutionsSurfaceDemo = ({ }) => { 
     const mapContextData = useContext(MapContext);
@@ -21,19 +22,20 @@ export const SolutionsSurfaceDemo = ({ }) => {
     // const [surfaceResolution, setSurfaceResolution] = useState(null)
     // const [cameraState, setCameraState] = useState({position: {x: -118.255, y: 34.010, z: 1380}, tilt: 76})
     //
-    const geometrySketchCallback = (payload: any) => setAppContextState({...appContextState, AOIgeometry: payload})
+    const geometrySketchCallback = (payload: Object) => setAppContextState({...appContextState, AOIgeometry: payload})
+    // does sceneStateCallback need to be spread any specified???  Check later inside SceneMap
     const sceneStateCallback = (payload: any) => setSceneState(payload); 
-    const sketchStateCallback = (payload: any) => setSceneState({...sceneState, sketch: payload})
-    const cameraStateCallback = (payload: any) => setCameraState(payload);
+    const sketchStateCallback = (payload: __esri.Sketch) => setSceneState({...sceneState, sketch: payload})
+    // const cameraStateCallback = (payload: any) => setCameraState(payload);
     
-    // const surfaceDataCallback = payload => { 
-    //     setSurfaceFields(payload[0]);
-    //     setDemoType(payload[1])
-    //     setSurfaceResolution(payload[2])
-    // };
-    // useEffect(() => {
-    //     console.table(sceneState)
-    // }, [sceneState])
+    const surfaceDataCallback = payload => { 
+        setSurfaceFields(payload[0]);
+        // setDemoType(payload[1])
+        setSurfaceResolution(payload[2])
+    };
+    useEffect(() => {
+        console.log(appContextState)
+    }, [appContextState])
 
     return (
         <>
@@ -52,12 +54,12 @@ export const SolutionsSurfaceDemo = ({ }) => {
             </SceneMap>
             {/* <LocationNavigationBar cameraStateCallback={cameraStateCallback} />*/}
             {/* { sceneState.view && <CameraUpdate view={sceneState.view} camera={cameraState} /> }*/}
-            {/* <DemoOptions 
-                demoState={demoState} 
-                onDemoSelect={surfaceDataCallback} 
+            <DemoOptions 
                 scene={sceneState}
                 geometryCallback={geometrySketchCallback}
-            /> */}
+                onDemoSelect={surfaceDataCallback} 
+                /* demoState={demoState} */
+            /> 
         {/* </SurfaceProvider>*/}
         </MapContext.Provider>
         </AppContext.Provider>
