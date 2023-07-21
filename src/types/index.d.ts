@@ -1,4 +1,4 @@
-export interface Position { x: number; y: number; z?: number }
+export interface Position { x?: number; y: number; z?: number }
 
 export interface CameraPosition {
     position?: Position;
@@ -18,12 +18,14 @@ export interface DemoCard {
 export interface AppContextInterface {
     demoType?: string; 
     demoPanel?: string; 
-    cameraLocation?: {[key: string]: CameraPosition}; 
+    cameraLocation?: CameraPosition; 
     availableLayers?: Array; 
     fieldDomains?: Array; 
     scoredFields?: Array; 
     AOIgeometry?: Object; 
     basemap?: string;
+    waypointsGeometry?: Object;
+    surfaceResolution?: number;
 }
 
 export interface MapContextInterface {

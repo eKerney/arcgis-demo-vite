@@ -1,26 +1,27 @@
-import React, { useContext, useState } from "react";
-// import DemoCards from "./components/DemoCards"
-// import SolutionsSurfaceDemo from "./components/SolutionsSurfaceDemo";
+import { useContext, useEffect, useState } from "react";
+import DemoCards from "./components/DemoCards"
 // import RoutingDemo from "./components/RoutingDemo";
 // import ElevateDemo from "./components/ElevateDemo";
 // import MultiPathDemo from "./components/MultiPathDemo";
 // import ReadyToFlyDemo from "./components/ReadyToFlyDemo";
 import SceneMap from "./components/SceneMap";
-// import banner from './components/common/Airspace Link Banner.png'
+import banner from '../src/assets/Airspace Link Banner.png'
 // import DemoProvider from "./contexts/DemoContext";
 // import { DemoContext } from "./contexts/DemoContext";
 import CssBaseline from '@mui/material/CssBaseline';
 import { AppContext } from "./contexts/AppContext";
+import { MapContext } from "./contexts/MapContext";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import "./App.css";
-import type { AppContextInterface, CameraPosition, DemoCard } from "./types";
+import type { AppContextInterface, CameraPosition, DemoCard, MapContextInterface } from "./types";
+import SolutionsSurfaceDemo from "./components/SolutionsSurfaceDemo";
 
 const demoCardData: DemoCard[] = [
-    {name: 'AirHub SolutionsSurface', position: {marginLeft:-600, marginTop:-300}, imagePath:'images/SolutionsSurface.png', action:'SURFACE', altText:'Solutions Surface Demo', desc: 'Mash up over 60 AirHub data sources into a customizable drone solution surface'},
-    {name: 'AirHub Elevate', position: {marginLeft:-150, marginTop:-300}, imagePath:'images/RouteConvert.png', action:'ROUTECONVERTER', altText:'UAS Route Convertor Demo', desc: 'Exact altitude & elevation reference data for precise 3Ddrone routing' },
-    {name: 'AirHub SkyPath', position: {marginLeft:300, marginTop:-300}, imagePath:'images/UASrouting.png', action:'ROUTING', altText: 'UAS Routing Demo', desc: 'Precise Least Cost Path routing from custom generated surfaces'},
-    {name: 'AirHub MultiPath', position: {marginLeft:-600, marginTop:0}, imagePath:'images/MultiPathDemo.png', action:'MULTIROUTING', altText: 'UAS MultiPath Routing', desc: 'Custom surface Least Cost Path Hub+Spoke Routing'},
-    {name: 'AirHub ReadyToFly', position: {marginLeft:-150, marginTop:0}, imagePath:'images/ReadyToFly.png', action:'READYTOFLY', altText: 'Surface, MultiPath Routing and Elevate', desc: 'UAS Solutions Surface LeastCostPath to precise 3D elevated ready-to-fly routes'},
+    {name: 'AirHub SolutionsSurface', position: {marginLeft:-600, marginTop:-300}, imagePath:'../src/assets/SolutionsSurface.png', action:'SURFACE', altText:'Solutions Surface Demo', desc: 'Mash up over 60 AirHub data sources into a customizable drone solution surface'},
+    {name: 'AirHub Elevate', position: {marginLeft:-150, marginTop:-300}, imagePath:'../src/assets/RouteConvert.png', action:'ROUTECONVERTER', altText:'UAS Route Convertor Demo', desc: 'Exact altitude & elevation reference data for precise 3Ddrone routing' },
+    {name: 'AirHub SkyPath', position: {marginLeft:300, marginTop:-300}, imagePath:'../src/assets/UASrouting.png', action:'ROUTING', altText: 'UAS Routing Demo', desc: 'Precise Least Cost Path routing from custom generated surfaces'},
+    {name: 'AirHub MultiPath', position: {marginLeft:-600, marginTop:0}, imagePath:'../src/assets/MultiPathDemo.png', action:'MULTIROUTING', altText: 'UAS MultiPath Routing', desc: 'Custom surface Least Cost Path Hub+Spoke Routing'},
+    {name: 'AirHub ReadyToFly', position: {marginLeft:-150, marginTop:0}, imagePath:'../src/assets/ReadyToFly.png', action:'READYTOFLY', altText: 'Surface, MultiPath Routing and Elevate', desc: 'UAS Solutions Surface LeastCostPath to precise 3D elevated ready-to-fly routes'},
 ]
 const bannerStyle = { zIndex: 10, width: 360, position: 'absolute', left: '50%', top: '50%', marginLeft: -180, marginTop: 300, opacity: 0.5 }
 
@@ -33,28 +34,47 @@ const locations: {[key: string]: CameraPosition} = {
     'Phoenix': {position: {x: -112.026, y: 33.356, z: 2659 }, heading: 335, tilt: 75},
     'Holland, MI': {position: {x: -86.034, y: 42.749, z: 2181 }, heading: 298, tilt: 71.86},
 }
+const darkTheme = createTheme({ palette: { mode: 'dark', }, });
 
 export const App = () => { 
-    const darkTheme = createTheme({ palette: { mode: 'dark', }, });
-    const [sceneState, setSceneState] = useState({scene: null, view: null, sketch: null });
+    const appContextData = useContext(AppContext);  
+    const mapContextData = useContext(MapContext);
+    const [sceneState, setSceneState] = useState<MapContextInterface>(mapContextData);
     const sceneStateCallback = payload => setSceneState(payload);
-    
     const [appContextState, setAppContextState] = useState<AppContextInterface>({
-        demoType: 'DEMO SELECT', demoPanel: 'DEMO PANEL', cameraLocation: {'Los Angeles': locations['Los Angeles']},
-        availableLayers: [], fieldDomains: [], scoredFields: [], AOIgeometry: {}, basemap: 'dark-gray-vector'
+        demoType: 'DEMO SELECT', 
+        demoPanel: 'DEMO PANEL', 
+        cameraLocation: locations['Los Angeles'],
+        availableLayers: [], 
+        fieldDomains: [], 
+        scoredFields: [], 
+        AOIgeometry: {}, 
+        basemap: 'dark-gray-vector',
+        waypointsGeometry: {},
+        surfaceResolution: 0,
     });
+    const demoCardCallback = payload => setAppContextState({...appContextState, demoType: payload});
 
-    const [demoCard, setDemoCard] = useState(demoCardData)
+
+    // const [demoCard, setDemoCard] = useState(demoCardData)
+    useEffect(() => {
+        // console.log('app', appContextData);
+        // console.log('app', mapContextData);
+    })
 
     return (
         <>
         <ThemeProvider theme={darkTheme}>
         <CssBaseline />
         <AppContext.Provider value={appContextState} >
-            {appContextState.demoType === 'DEMO SELECT' && 
-            <SceneMap basemap={appContextState.basemap} sceneStateCallback={sceneStateCallback} 
-            camera={appContextState.cameraLocation} />}
-            </AppContext.Provider>
+        <MapContext.Provider value={sceneState} >
+            {appContextState.demoType === 'DEMO SELECT' && <SceneMap sceneStateCallback={sceneStateCallback} /> }
+            {appContextState.demoType === 'DEMO SELECT' && <DemoCards demoCardData={demoCardData} demoCardCallback={demoCardCallback} />}
+            {appContextState.demoType === demoCardData[0].name && <SolutionsSurfaceDemo />} 
+            {appContextState.demoType==='DEMO SELECT' && <img src={banner} style={bannerStyle} alt='Airspace Link Inc. banner'/> }
+
+        </MapContext.Provider>
+        </AppContext.Provider>
         </ThemeProvider>
         </>
     )
