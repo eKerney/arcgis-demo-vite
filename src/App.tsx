@@ -42,7 +42,7 @@ export const App = () => {
     const [sceneState, setSceneState] = useState<MapContextInterface>(mapContextData);
     const sceneStateCallback = payload => setSceneState(payload);
     const [appContextState, setAppContextState] = useState<AppContextInterface>({
-        demoType: 'DEMO SELECT', 
+        demoType: 'AirHub SolutionsSurface', 
         demoPanel: 'DEMO PANEL', 
         cameraLocation: locations['Los Angeles'],
         availableLayers: [], 

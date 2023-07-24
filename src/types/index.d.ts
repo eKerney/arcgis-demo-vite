@@ -35,5 +35,23 @@ export interface MapContextInterface {
     graphicsLayer?: __esri.GraphicsLayer;
 }
 
+export interface FeatureInterface {
+    type: string;
+    geometry: Object
+    properties?: Object;
+}
 
+export interface GeoJSONinterface {
+    type: string;
+    features: FeatureInterface[];
+}
+
+export interface SurfaceInterface {
+    GeoJSONblob?: string;
+    fields?: Object;
+    fieldInfos?: Object;
+    hexTypes?: number;
+    parsedGeoJSON?: GeoJSONinterface;
+    blob?: string
+}
 

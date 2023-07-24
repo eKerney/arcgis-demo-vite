@@ -40,7 +40,7 @@ import { AppContext } from "../contexts/AppContext";
     //     surfaceResolution: 0,
     // });
     //
-export const DemoOptions = ({ demoState, onDemoSelect, secondaryCallback, scene, geometryCallback, elevateParamsCallback }) => {
+export const DemoOptions = ({ onDemoSelect, secondaryCallback, scene, geometryCallback, elevateParamsCallback }) => {
     const drawerWidth = 70;
     const logoStyle = {marginTop: -40, marginBottom: 20, marginRight: 2}
     // const [demoType, setDemoType] = useState('');
@@ -86,11 +86,11 @@ export const DemoOptions = ({ demoState, onDemoSelect, secondaryCallback, scene,
 
     const renderControlPanel = () => {
         return (
-            appContextData.demoPanel  === 'REFRESH MAP' 
+            appContextState.demoPanel  === 'REFRESH MAP' 
             ? window.location.reload(false) 
             // : appContextData.demoType === 'AirHub ReadyToFly' && surface && route 
             // ? <ElevatePanel onDemoSelect={onDemoSelect} elevateParamsCallback={elevateParamsCallback}/> 
-            : appContextData.demoPanel === 'SELECT DATA SURFACE' 
+            : appContextState.demoPanel === 'SELECT DATA SURFACE' 
             ? <SelectDataSurface geometryCallback={geometryCallback} demoState={appContextData.demoType} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
             // : appContextData.demoPanel === 'CLASSIFY SURFACE'
             // ? <ClassifySurface geometryCallback={geometryCallback} demoState={appContextData.demoType} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
@@ -130,7 +130,8 @@ export const DemoOptions = ({ demoState, onDemoSelect, secondaryCallback, scene,
           {demoOptionsList.map((text, index) => (
             <ListItem key={text} disablePadding > <Tooltip title={text} placement="right">
               <ListItemButton onClick={() => {
-                setDemoType(text.toUpperCase())
+               setAppContextState({...appContextData, demoPanel: text.toUpperCase()}) 
+                // setDemoType(text.toUpperCase())
               }}>  
                 <ListItemIcon>
                   {demoIconsList[index]}

@@ -2,7 +2,7 @@ import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import {useState, useContext } from 'react';
 // import { SurfaceContext } from '../contexts/Surface';
-// import SurfaceResolutionSelector from './SurfaceResolutionSelector';
+import SurfaceResolutionSelector from './SurfaceResolutionSelector';
 // import RemoveSurfaceButton from './RemoveSurfaceButton';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -37,7 +37,7 @@ function getStyles(name, personName, theme) {
 }
 
 export const SelectDataSurface = ({ demoState, onDemoSelect, secondaryCallback, scene, geometryCallback}) => {
-    const { surface } = useContext(SurfaceContext);
+    // const { surface } = useContext(SurfaceContext);
     const theme = useTheme();
     const [selectedFields, setSelectedFields] = useState([]);
     const [scoredFields, setScoredFields] = useState([]); 
