@@ -15,42 +15,40 @@ import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import SelectDataSurface from './SelectDataSurface';
-import ClassifySurface from './ClassifySurface';
-import CalculateSurface from './CalculateSurface';
-import SurfaceModel from './SurfaceModel';
+// import ClassifySurface from './ClassifySurface';
+// import CalculateSurface from './CalculateSurface';
+// import SurfaceModel from './SurfaceModel';
 import { Tooltip } from '@mui/material';
 import logo from '../assets/ASLLogoStack.png'
-import ElevatePanel from "./ElevatePanel";
+// import ElevatePanel from "./ElevatePanel";
 import { AppContext } from "../contexts/AppContext";
-// import { DemoContext } from "../contexts/DemoContext";
-// import { SurfaceContext } from "../contexts/Surface";
+import { SurfaceContext } from "../contexts/Surface";
+import { MapContext } from "../contexts/MapContext";
 // import { RouteContext } from "../contexts/Route";
 // import UploadAOIpanel from "./UploadAOIpanel";
 
-    // const [appContextState, setAppContextState] = useState<AppContextInterface>({
-    //     demoType: 'DEMO SELECT', 
-    //     demoPanel: 'DEMO PANEL', 
-    //     cameraLocation: locations['Los Angeles'],
-    //     availableLayers: [], 
-    //     fieldDomains: [], 
-    //     scoredFields: [], 
-    //     AOIgeometry: {}, 
-    //     basemap: 'dark-gray-vector',
-    //     waypointsGeometry: {},
-    //     surfaceResolution: 0,
-    // });
-    //
-export const DemoOptions = ({ onDemoSelect, secondaryCallback, scene, geometryCallback, elevateParamsCallback }) => {
+export const DemoOptions = ({ surfaceDataCallback, geometryCallback, }) => {
     const drawerWidth = 70;
     const logoStyle = {marginTop: -40, marginBottom: 20, marginRight: 2}
     // const [demoType, setDemoType] = useState('');
-    // const { surface } = useContext(SurfaceContext);
+    const surface = useContext(SurfaceContext);
     // const { route } = useContext(RouteContext);
     // const { demo } = useContext(DemoContext);
     const [files, setFiles] = useState([]);
     // newly added
     const appContextData = useContext(AppContext);
     const [appContextState, setAppContextState] = useState<AppContextInterface>(appContextData);
+    const mapContextData = useContext(MapContext);
+    const handleClick = (event, text: string) =>  {
+        // console.log(text)
+        // console.log(event)
+        setAppContextState(previous => ({...previous, demoPanel: text.toUpperCase()}) ) 
+        surfaceDataCallback({
+            scoredFields: appContextState.scoredFields, 
+            demoPanel: text.toUpperCase(),
+            surfaceResolution: appContextState.surfaceResolution,
+        });
+    }
 
     //file upload working section
     useEffect(() => {
@@ -68,12 +66,12 @@ export const DemoOptions = ({ onDemoSelect, secondaryCallback, scene, geometryCa
 
   const demoOptionsList = [
     ...((appContextData.demoType ==='AirHub SkyPath' || appContextData.demoType==='AirHub Elevate' || appContextData.demoType==='AirHub MultiPath' 
-        || appContextData.demoType==='AirHub ReadyToFly') ? [] : ['Select Data Surface']),
-    ...((appContextData.demoType==='AirHub Elevate') ? [] : ['Classify Surface']),
-    ...((appContextData.demoType==='AirHub Elevate') ? [] : ['Calculate Surface']),
-    ...((appContextData.demoType==='AirHub Elevate') ? [] : ['Surface Data Model']),
-    ...['Refresh Map'],
-    ...['Upload AOI Geometry']
+        || appContextData.demoType==='AirHub ReadyToFly') ? [] : ['SELECT DATA SURFACE']),
+    ...((appContextData.demoType==='AirHub Elevate') ? [] : ['CLASSIFY SURFACE']),
+    ...((appContextData.demoType==='AirHub Elevate') ? [] : ['CALCULATE SURFACE']),
+    ...((appContextData.demoType==='AirHub Elevate') ? [] : ['SURFACE DATA MODEL']),
+    ...['REFRESH MAP'],
+    ...['UPLOAD AOI GEOMETRY']
   ];
   const demoIconsList = [
     ...((appContextData.demoType==='AirHub SkyPath' || appContextData.demoType==='AirHub Elevate'|| appContextData.demoType==='AirHub MultiPath' 
@@ -91,7 +89,7 @@ export const DemoOptions = ({ onDemoSelect, secondaryCallback, scene, geometryCa
             // : appContextData.demoType === 'AirHub ReadyToFly' && surface && route 
             // ? <ElevatePanel onDemoSelect={onDemoSelect} elevateParamsCallback={elevateParamsCallback}/> 
             : appContextState.demoPanel === 'SELECT DATA SURFACE' 
-            ? <SelectDataSurface geometryCallback={geometryCallback} demoState={appContextData.demoType} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
+            ? <SelectDataSurface geometryCallback={geometryCallback} surfaceDataCallback={surfaceDataCallback} /> 
             // : appContextData.demoPanel === 'CLASSIFY SURFACE'
             // ? <ClassifySurface geometryCallback={geometryCallback} demoState={appContextData.demoType} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
             // : appContextData.demoPanel === 'CALCULATE SURFACE' 
@@ -127,12 +125,9 @@ export const DemoOptions = ({ onDemoSelect, secondaryCallback, scene, geometryCa
         <img src={logo} style={logoStyle} />
         <Divider />
         { <List >
-          {demoOptionsList.map((text, index) => (
-            <ListItem key={text} disablePadding > <Tooltip title={text} placement="right">
-              <ListItemButton onClick={() => {
-               setAppContextState({...appContextData, demoPanel: text.toUpperCase()}) 
-                // setDemoType(text.toUpperCase())
-              }}>  
+          {demoOptionsList.map((textData, index) => (
+            <ListItem key={textData} disablePadding > <Tooltip title={textData} placement="right">
+              <ListItemButton onClick={event => handleClick(event, textData)}>  
                 <ListItemIcon>
                   {demoIconsList[index]}
                 </ListItemIcon>

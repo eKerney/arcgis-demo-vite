@@ -1,9 +1,9 @@
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import {useState, useContext } from 'react';
-// import { SurfaceContext } from '../contexts/Surface';
+import { SurfaceContext } from '../contexts/Surface';
 import SurfaceResolutionSelector from './SurfaceResolutionSelector';
-// import RemoveSurfaceButton from './RemoveSurfaceButton';
+import RemoveSurfaceButton from './RemoveSurfaceButton';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -16,6 +16,9 @@ import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import PublishIcon from '@mui/icons-material/Publish';
 // let layersData = require('../components/layersData.json');
 import layersData from '../components/layersData.json'; 
+import { AppContext } from '../contexts/AppContext';
+import { MapContext } from '../contexts/MapContext';
+import { AppContextInterface } from '../types';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -36,31 +39,47 @@ function getStyles(name, personName, theme) {
   };
 }
 
-export const SelectDataSurface = ({ demoState, onDemoSelect, secondaryCallback, scene, geometryCallback}) => {
-    // const { surface } = useContext(SurfaceContext);
+export const SelectDataSurface = ({ surfaceDataCallback, geometryCallback}) => {
+    const appContextData = useContext(AppContext);
+    const [appContextState, setAppContextState] = useState<AppContextInterface>(appContextData)
+    // const mapContextData = useContext(MapContext);
+    const surface = useContext(SurfaceContext);
     const theme = useTheme();
     const [selectedFields, setSelectedFields] = useState([]);
     const [scoredFields, setScoredFields] = useState([]); 
     const layers = ((layersData.layers.filter(d => !layersData.excludeClassify.includes(d))).filter(d => !layersData.problemLayers.includes(d))).sort();
     const [surfaceResolution, setSurfaceResolution] = useState(null); 
-    const surfaceResolutionCallback = payload => setSurfaceResolution(payload)
-    const setHeight = () => selectedFields.length === 0 ? '400px' : (`${selectedFields.length*48+380}px`)  
+    // NOTE: Look to remove need for surfaceResolutionCallback in future 
+    const surfaceResolutionCallback = (payload: any) => {
+        // setSurfaceResolution(payload)
+        console.log('resolution', payload)
+        setAppContextState(previous => ({...previous, surfaceResolution: payload}) )
+        console.log('resolution', appContextState.surfaceResolution)
+    }
+
+    const setHeight = () => selectedFields.length === 0 ? '500px' : (`${selectedFields.length*48+380}px`)  
 
     const handleFieldChange = (event) => {
         const { target: { value }, } = event;
         setSelectedFields( typeof value === 'string' ? value.split(',') : value,);
         setScoredFields(value.map(field => ({field: field, score: 'HIGH', func: [] })));
+        setAppContextState({...appContextState, scoredFields: scoredFields})
     };
-    // useEffect(() => console.log(scoredFields), [scoredFields] );
 
     const exportSurfaceData = () => {
         const link = document.createElement("a")
         link.download = "surfaceData.geojson"
-        link.href = surface[0] 
+        link.href = surface.GeoJSONblob
         link.click()
     }
 
-    const submitSurfaceFields = () => onDemoSelect([scoredFields, 1, surfaceResolution]);
+    const submitSurfaceFields = () => {
+        surfaceDataCallback({
+            scoredFields: appContextState.scoredFields, 
+            demoPanel: 'SELECT DATA COMPONENT', 
+            surfaceResolution: appContextState.surfaceResolution,
+        });
+    };
 
     return  (
   <>
@@ -106,7 +125,7 @@ export const SelectDataSurface = ({ demoState, onDemoSelect, secondaryCallback, 
         <Button 
             variant="contained" 
             startIcon={<PublishIcon />}
-            onClick={scoredFields && surfaceResolution && submitSurfaceFields}>
+            onClick={scoredFields && appContextState.surfaceResolution && submitSurfaceFields}>
             Surface Request
         </Button>
             <br />  
@@ -119,8 +138,10 @@ export const SelectDataSurface = ({ demoState, onDemoSelect, secondaryCallback, 
         </Button> }
         <br />
         <br />
-        { surface && <RemoveSurfaceButton onDemoSelect={onDemoSelect} scene={scene} geometryCallback={geometryCallback} 
-          scoredFields={scoredFields} surfaceResolution={surfaceResolution} />}
+        { surface.GeoJSONblob && <RemoveSurfaceButton 
+            surfaceDataCallback={surfaceDataCallback} 
+            geometryCallback={geometryCallback}
+        />}
     </Box>
     </div>
   </>

@@ -2,10 +2,10 @@ import { createContext, useState, useEffect, useCallback, useContext } from 'rea
 import axios from 'axios'
 import Spinner from '../components/Spinner';
 import { AppContext } from './AppContext';
-import { GeoJSONinterface, SurfaceInterface } from '../types';
+import { GeoJSONinterface, MapContextInterface, SurfaceInterface } from '../types';
 
 // const metadata = require('../components/metaDataJOINobj.json');
-const metadata = require('../components/metadata.json');
+import metadata from '../components/metadata.json';
 //
 // const BASE_URI=process.env.REACT_APP_BASE_URI
 // const SUBSCRIPTION=process.env.REACT_APP_SUBSCRIPTION
@@ -13,18 +13,18 @@ const metadata = require('../components/metadata.json');
 // const CLIENT_SECRET=process.env.REACT_APP_CLIENT_SECRET
 // const API_SCOPE='airhub-api/advisory.read'
 
-export const SurfaceContext = createContext({
-    surface: null,
-})
+export const SurfaceContext = createContext<SurfaceInterface>({GeoJSONblob: '', fields: {}, fieldInfos: {}, hexTypes: [], parsedGeoJSON: {type: '', features: []}, blob: new Blob([])})
 
-const SurfaceProvider = ({ children, auth }) => {
+const SurfaceProvider = ({ children }) => {
     const appContextData = useContext(AppContext);
-    const [surface, setSurface] = useState<SurfaceInterface>();
+    const [surface, setSurface] = useState<SurfaceInterface>({
+        GeoJSONblob: '', fields: {}, fieldInfos: {}, hexTypes: [], 
+        parsedGeoJSON: {type: '', features: []}, blob: new Blob([]) 
+    });
     const [loading, setLoading] = useState<Boolean>(true);
 
     const fetchSurface = useCallback(async () => {
       setLoading(true)
-    // console.log('in fetchSurface wrapper - geom', geometry)
       let requestData = { 
         "resolution": appContextData.surfaceResolution, 
         "scoring": { "LOW": 5, "MED": 50, "HIGH": 200 },
@@ -35,20 +35,11 @@ const SurfaceProvider = ({ children, auth }) => {
           "type": "Polygon",
           "coordinates": [appContextData.AOIgeometry]
         },
-        // Local Testing
-        // "ENV": {
-        //     "BASE_URI": BASE_URI,
-        //     "SUBSCRIPTION": SUBSCRIPTION,
-        //     "CLIENT_ID": CLIENT_ID,
-        //     "CLIENT_SECRET": CLIENT_SECRET,
-        //     "API_SCOPE": API_SCOPE
-        // },
       };
 
-        if (appContextData.scoredFields) {
+        if (appContextData.scoredFields.length !== 0) {
                 appContextData.scoredFields.forEach(d => {
                     // special cases for calculated value layers 
-
                     const field = ((d.field).split('_'))[0];
                     const funcExpr = metadata[field].CODE === 'roads' ? d.func.join("|")
                         : d.func
@@ -96,9 +87,8 @@ const SurfaceProvider = ({ children, auth }) => {
             },
             data : data
         };
-
-        if (appContextData.AOIgeometry && appContextData.scoredFields) {
-              console.table(requestData);
+        if (Object.keys(appContextData.AOIgeometry).length !== 0 && Object.keys(appContextData.scoredFields).length !== 0) {
+              console.log('request', requestData);
                 axios(config)
                   .then(function (response) {
                     console.log('IN DATA FETCH');
@@ -111,9 +101,8 @@ const SurfaceProvider = ({ children, auth }) => {
                         fieldInfos.push({fieldName:d[0], label:d[0]})
                     });
                     // create blobURL to be added to ArcGIS scene as GeoJSONlayer 
-                    const blob = new Blob([JSON.stringify(parsedGeoJSON)], { type: "application/json" });
-                    const geoJSONblob = URL.createObjectURL(blob);
-                    // console.log(geoJSONblob);
+                    const blobData = new Blob([JSON.stringify(parsedGeoJSON)], { type: "application/json" });
+                    const geoJSONblob = URL.createObjectURL(blobData);
                     // prep data for HexGraph visualization
                       let s = [0,0,0]
                       const hexF = 100/37, len = parsedGeoJSON.features.length
@@ -128,30 +117,37 @@ const SurfaceProvider = ({ children, auth }) => {
                           .concat(Array(hexPer[1]).fill(50))
                           .concat(Array(hexPer[2]).fill(5))
                     // surface context contains geoJSONblob, fields and fieldInfos for layer rendering
-                    setSurface([ geoJSONblob, fields, fieldInfos, hexTypes, parsedGeoJSON, blob]);
+                    // setSurface([geoJSONblob, fields, fieldInfos, hexTypes, parsedGeoJSON, blob]);
+                    setSurface({GeoJSONblob: geoJSONblob, fields: fields, fieldInfos: fieldInfos, 
+                        hexTypes: hexTypes, parsedGeoJSON: parsedGeoJSON, blob: blobData
+                    })
                     setLoading(false)
                   })
                   .catch(function (error: Error) {
-                    console.table(error);
+                    console.log(error);
                   });
         }
-  }, [surfaceFields])
+  }, [appContextData.scoredFields])
    
-  useEffect(() => {
-      fetchSurface()
-  }, [fetchSurface])
+    useEffect(() => {
+        fetchSurface()
+        // console.log('fetchSurface');
+        // console.log(appContextData);
+    }, [fetchSurface])
 
-  useEffect(() => {
+    useEffect(() => {
       // clears surface data when reset surface button is clicked
-      demoType === 5 && setSurface(false)
-  }, [demoType])
+        appContextData.demoPanel === 'REFRESH MAP' && setSurface({
+            GeoJSONblob: '', fields: {}, fieldInfos: {}, 
+            hexTypes: [], parsedGeoJSON: {type: '', features: []}, blob: new Blob([])
+       }); 
+    }, [appContextData.demoPanel])
 
-    const context = { surface }
+    const context = surface 
 
   return (
   <>
-  {loading && surfaceFields && <Spinner /> }
-  {/* {!loading && <SurfaceContext.Provider value={context}>{children}</SurfaceContext.Provider>} */}
+  {loading && appContextData.scoredFields.length !== 0  && <Spinner /> }
   <SurfaceContext.Provider value={context}>{children}</SurfaceContext.Provider>
   </> 
   )

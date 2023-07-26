@@ -1,5 +1,4 @@
-import { useContext, useState, useEffect, useRef, useCallback, useLayoutEffect } from "react";
-// import WebScene from "@arcgis/core/WebScene";
+import { useContext, useState, useEffect, useRef, } from "react";
 import WebScene from "@arcgis/core/WebScene";
 import SceneView from "@arcgis/core/views/SceneView";
 import SceneLayer from "@arcgis/core/layers/SceneLayer";

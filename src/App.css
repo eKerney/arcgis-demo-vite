@@ -4,5 +4,50 @@
     height: 100%;
     width: 100%;
 }
+.control-panel {
+    position: absolute;
+    top: 0;
+    right: 0; 
+    border-bottom-left-radius: 0;
+    width: 320px;
+    height: 720px;
+    background: rgba(20, 20, 20 , 0.7);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+    padding: 12px 24px;
+    margin: 20px;
+    line-height: 1; 
+    color: #ffffff;
+    /* text-transform: uppercase; */
+    outline: none;
+    overflow: hidden;
+    /* background: #ffffff00; */
+    text-align: left;
+    padding-top: 0px;
+    /* transform: scale(0.8);
+    transform-origin: top left; */
+}
+.hexagraph {
+    position: absolute;
+    z-index: 10;
+    top: 300;
+    right: 300; 
+    border-bottom-left-radius: 0;
+    width: 320px;
+    height: 300px;
+    background: rgba(20, 20, 20 , 0.0);
+    padding: 100px -20px;
+    margin: 20px;
+    line-height: 1; 
+    outline: none;
+    overflow: hidden;
+    text-align: left;
+    padding-top: 0px;
+}
 
+.esri-component {
+    margin-left: 60px;
+}
+.esri-component.esri-compass {
+    margin-left: 60px;
+}
 

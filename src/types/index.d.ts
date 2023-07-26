@@ -21,7 +21,7 @@ export interface AppContextInterface {
     cameraLocation?: CameraPosition; 
     availableLayers?: Array; 
     fieldDomains?: Array; 
-    scoredFields?: Array; 
+    scoredFields?: Object[]; 
     AOIgeometry?: Object; 
     basemap?: string;
     waypointsGeometry?: Object;
@@ -50,8 +50,8 @@ export interface SurfaceInterface {
     GeoJSONblob?: string;
     fields?: Object;
     fieldInfos?: Object;
-    hexTypes?: number;
+    hexTypes?: number[];
     parsedGeoJSON?: GeoJSONinterface;
-    blob?: string
+    blob?: Blob;
 }
 

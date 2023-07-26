@@ -1,13 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import DemoCards from "./components/DemoCards"
-// import RoutingDemo from "./components/RoutingDemo";
+import SkyPathDemo from "./components/SkyPathDemo";
 // import ElevateDemo from "./components/ElevateDemo";
 // import MultiPathDemo from "./components/MultiPathDemo";
 // import ReadyToFlyDemo from "./components/ReadyToFlyDemo";
 import SceneMap from "./components/SceneMap";
 import banner from '../src/assets/Airspace Link Banner.png'
-// import DemoProvider from "./contexts/DemoContext";
-// import { DemoContext } from "./contexts/DemoContext";
 import CssBaseline from '@mui/material/CssBaseline';
 import { AppContext } from "./contexts/AppContext";
 import { MapContext } from "./contexts/MapContext";
@@ -42,7 +40,7 @@ export const App = () => {
     const [sceneState, setSceneState] = useState<MapContextInterface>(mapContextData);
     const sceneStateCallback = payload => setSceneState(payload);
     const [appContextState, setAppContextState] = useState<AppContextInterface>({
-        demoType: 'AirHub SolutionsSurface', 
+        demoType: 'DEMO SELECT', 
         demoPanel: 'DEMO PANEL', 
         cameraLocation: locations['Los Angeles'],
         availableLayers: [], 
@@ -55,10 +53,8 @@ export const App = () => {
     });
     const demoCardCallback = payload => setAppContextState({...appContextState, demoType: payload});
 
-
-    // const [demoCard, setDemoCard] = useState(demoCardData)
     useEffect(() => {
-        // console.log('app', appContextData);
+        console.log('app', appContextState);
         // console.log('app', mapContextData);
     })
 
@@ -71,6 +67,7 @@ export const App = () => {
             {appContextState.demoType === 'DEMO SELECT' && <SceneMap sceneStateCallback={sceneStateCallback} /> }
             {appContextState.demoType === 'DEMO SELECT' && <DemoCards demoCardData={demoCardData} demoCardCallback={demoCardCallback} />}
             {appContextState.demoType === demoCardData[0].name && <SolutionsSurfaceDemo />} 
+            {appContextState.demoType === demoCardData[2].name && <SkyPathDemo  />} 
             {appContextState.demoType==='DEMO SELECT' && <img src={banner} style={bannerStyle} alt='Airspace Link Inc. banner'/> }
 
         </MapContext.Provider>
