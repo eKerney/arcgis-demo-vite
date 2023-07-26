@@ -15,7 +15,7 @@ import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import SelectDataSurface from './SelectDataSurface';
-// import ClassifySurface from './ClassifySurface';
+import ClassifySurface from './ClassifySurface';
 // import CalculateSurface from './CalculateSurface';
 // import SurfaceModel from './SurfaceModel';
 import { Tooltip } from '@mui/material';
@@ -90,8 +90,8 @@ export const DemoOptions = ({ surfaceDataCallback, geometryCallback, }) => {
             // ? <ElevatePanel onDemoSelect={onDemoSelect} elevateParamsCallback={elevateParamsCallback}/> 
             : appContextState.demoPanel === 'SELECT DATA SURFACE' 
             ? <SelectDataSurface geometryCallback={geometryCallback} surfaceDataCallback={surfaceDataCallback} /> 
-            // : appContextData.demoPanel === 'CLASSIFY SURFACE'
-            // ? <ClassifySurface geometryCallback={geometryCallback} demoState={appContextData.demoType} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
+            : appContextData.demoPanel === 'CLASSIFY SURFACE'
+            ? <ClassifySurface geometryCallback={geometryCallback} surfaceDataCallback={surfaceDataCallback} /> 
             // : appContextData.demoPanel === 'CALCULATE SURFACE' 
             // ? <CalculateSurface geometryCallback={geometryCallback} demoState={appContextData.demoType} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
             // : appContextData.demoPanel === 'SURFACE DATA MODEL' 

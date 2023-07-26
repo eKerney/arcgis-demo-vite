@@ -7,9 +7,9 @@ import { AppContextInterface, MapContextInterface } from "../types";
 import DemoOptions from "./DemoOptions";
 import SurfaceProvider from "../contexts/Surface";
 import SurfaceLayer from "./SurfaceLayer";
-// import HexaGraph from "./HexaGraph";
+import HexaGraph from "./HexaGraph";
 
-export const SolutionsSurfaceDemo = ({ }) => { 
+export const SolutionsSurfaceDemo = () => { 
     const mapContextData = useContext(MapContext);
     const [mapContextState, setMapContextState] = useState<MapContextInterface>(mapContextData);
     const appContextData = useContext(AppContext);
