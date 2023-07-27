@@ -27,13 +27,6 @@ export const ClassifySurface = ({ surfaceDataCallback, geometryCallback}) => {
     const [scoredFields, setScoredFields] = useState<Object[]>([]); 
     const layers = ((layersData.layers.filter(d => !layersData.excludeClassify.includes(d))).filter(d => !layersData.problemLayers.includes(d))).sort();
     const surfaceResolutionCallback = (payload: any) => setAppContextState({...appContextState, surfaceResolution: payload})
-    const submitSurfaceFields = () => {
-        surfaceDataCallback({
-            scoredFields: appContextState.scoredFields, 
-            demoPanel: 'CLASSIFY SURFACE', 
-            surfaceResolution: appContextState.surfaceResolution,
-        });
-    };
     const setHeight = () => selectedFields.length === 0 ? '400px' : (`${selectedFields.length*100+480}px`)  
     // const [surfaceResolution, setSurfaceResolution] = useState(null); 
     // const layers = ((layersData.layers.filter(d => !layersData.excludeClassify.includes(d))).filter(d => !layersData.problemLayers.includes(d))).sort();
