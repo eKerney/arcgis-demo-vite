@@ -90,7 +90,7 @@ export const DemoOptions = ({ surfaceDataCallback, geometryCallback, }) => {
             // ? <ElevatePanel onDemoSelect={onDemoSelect} elevateParamsCallback={elevateParamsCallback}/> 
             : appContextState.demoPanel === 'SELECT DATA SURFACE' 
             ? <SelectDataSurface geometryCallback={geometryCallback} surfaceDataCallback={surfaceDataCallback} /> 
-            : appContextData.demoPanel === 'CLASSIFY SURFACE'
+            : appContextState.demoPanel === 'CLASSIFY SURFACE'
             ? <ClassifySurface geometryCallback={geometryCallback} surfaceDataCallback={surfaceDataCallback} /> 
             // : appContextData.demoPanel === 'CALCULATE SURFACE' 
             // ? <CalculateSurface geometryCallback={geometryCallback} demoState={appContextData.demoType} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 

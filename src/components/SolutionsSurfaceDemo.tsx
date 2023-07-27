@@ -16,16 +16,15 @@ export const SolutionsSurfaceDemo = () => {
     const [appContextState, setAppContextState] = useState<AppContextInterface>(appContextData);
     
     const geometrySketchCallback = (payload: Object) => setAppContextState({...appContextState, AOIgeometry: payload})
-    // does sceneStateCallback need to be spread any specified???  Check later inside SceneMap
     const sceneStateCallback = (payload: any) => setMapContextState(payload); 
-    const sketchStateCallback = (payload: __esri.Sketch) => setMapContextState(previous => ({...previous, sketch: payload}))
+    const sketchStateCallback = (payload: __esri.Sketch) => setMapContextState(({...mapContextState, sketch: payload}))
     const surfaceDataCallback = (payload: any) => { 
         console.log(payload.demoPanel)
         setAppContextState({...appContextState, scoredFields: payload.scoredFields, surfaceResolution: payload.surfaceResolution, demoPanel: payload.demoPanel})
     };
 
     useEffect(() => {
-        console.log('Solutions appContextState', appContextState)
+        // console.log('Solutions appContextState', appContextState)
     }, [appContextState])
 
     return (

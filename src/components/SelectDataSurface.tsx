@@ -77,7 +77,7 @@ export const SelectDataSurface = ({ surfaceDataCallback, geometryCallback}) => {
     <Box textAlign='center'>
         <SurfaceResolutionSelector resolutionCallback={surfaceResolutionCallback}/> 
         <br />  
-        {scoredFields && appContextState.surfaceResolution && requestSurfaceButton(surfaceDataCallback, appContextState, 'SELECT DATA')}
+        {(scoredFields && appContextState.surfaceResolution !==0) && requestSurfaceButton(surfaceDataCallback, appContextState, 'SELECT DATA')}
         <br />  
         {surface.GeoJSONblob && exportSurfaceButton(surface)}
         <br />

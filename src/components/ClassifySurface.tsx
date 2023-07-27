@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import { useTheme } from '@mui/material/styles';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -8,8 +7,6 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
-import PublishIcon from '@mui/icons-material/Publish';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import { SurfaceContext } from "../contexts/Surface";
 // import UASrouting from './UASrouting';
 import SurfaceResolutionSelector from './SurfaceResolutionSelector';
@@ -20,8 +17,7 @@ import { AppContextInterface } from '../types';
 import { requestSurfaceButton, exportSurfaceButton } from '../utilities/utilityComponents';
 import { MenuProps, getStyles } from '../utilities/utilityFunctions.ts';
 
-// ClassifySurface Panel for SolutionsSurface & SkyPath Demos
-// export const ClassifySurface = ({ demoState, onDemoSelect, secondaryCallback, scene, geometryCallback }) => {
+// ClassifySurface Panel for SolutionsSurface, SkyPath Demos, MultiPath, ReadyToFly Demos
 export const ClassifySurface = ({ surfaceDataCallback, geometryCallback}) => {
     const appContextData = useContext(AppContext);
     const [appContextState, setAppContextState] = useState<AppContextInterface>(appContextData)
