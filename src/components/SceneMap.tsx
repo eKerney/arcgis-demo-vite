@@ -1,27 +1,31 @@
-import { useContext, useState, useEffect, useRef, } from "react";
+import { useContext, useEffect, useRef, } from "react";
 import WebScene from "@arcgis/core/WebScene";
 import SceneView from "@arcgis/core/views/SceneView";
 import SceneLayer from "@arcgis/core/layers/SceneLayer";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
-import { MapContext } from "../contexts/MapContext";
-import { AppContext } from "../contexts/AppContext";
+import { MapContext } from "../contexts/MapStore";
+import { AppContext } from "../contexts/AppStore";
 
-export const SceneMap = ({ children, sceneStateCallback }) => {
-    const mapContextData  = useContext(MapContext);
-    const appContextData = useContext(AppContext); 
+export const SceneMap = ({ children }) => {
+    // @ts-ignore
+    const [appContext, appDispatch] = useContext(AppContext);
+    // @ts-ignore
+    const [mapContext, mapDispatch] = useContext(MapContext);
+    // const mapContextData  = useContext(MapContext);
+    // const appContextData = useContext(AppContext); 
     const mapDiv = useRef(null);
 
     const createMap = useEffect(() => {
     if (mapDiv.current) {
         const scene = new WebScene({ 
-            basemap: appContextData.basemap,
+            basemap: appContext.basemap,
             ground: 'world-elevation',
         });
         const view = new SceneView({
                 map: scene,
                 container: mapDiv.current,
                 padding: {top: 40},
-                camera: appContextData.cameraLocation,
+                camera: appContext.cameraLocation,
                 spatialReference: { wkid: 4326 },
         });
         view.popup.defaultPopupTemplateEnabled = true;
@@ -35,7 +39,8 @@ export const SceneMap = ({ children, sceneStateCallback }) => {
             opacity: 0.02
         }); 
         scene.add(OSM3Dbuildings);
-        sceneStateCallback({...mapContextData, view: view, scene: scene, graphicsLayer: graphicsLayer})
+        mapDispatch({ type: 'sceneViewGraphics', payload: {scene: scene, view: view, graphicsLayer: graphicsLayer }})
+        // sceneStateCallback({...mapContextData, view: view, scene: scene, graphicsLayer: graphicsLayer})
 
         return () => { view && view.destroy() };
         }

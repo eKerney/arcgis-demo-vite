@@ -55,3 +55,28 @@ export interface SurfaceInterface {
     blob?: Blob;
 }
 
+export type MapAction = {
+    SCENE: string;
+    VIEW: string;
+    SKETCH: string;
+    GRAPHICSLAYER: string;
+    SCENEVIEWGRAPHICS: string;
+}
+
+export type AppAction = {
+    DEMOTYPE: string;
+    DEMOPANEL: string;
+    CAMERALOCATION: string;
+    AVAILABLELAYERS: string;
+    FIELDDOMAINS: string;
+    SCOREDFIELDS: string;
+    AOIGEOMETRY: string;
+    BASEMAP: string;
+    WAYPOINTSGEOMETRY: string;
+    SURFACERESOLUTION: string;
+}
+    
+export type Action = {
+    type: string
+    payload?: any
+}

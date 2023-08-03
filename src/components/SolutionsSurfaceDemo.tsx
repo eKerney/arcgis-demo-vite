@@ -1,23 +1,22 @@
 import { useEffect, useState, useContext } from "react";
 import SceneMap from './SceneMap';
 import SketchWidget from "./SketchWidget";
-import { AppContext } from "../contexts/AppContext";
-import { MapContext } from "../contexts/MapContext";
-import { AppContextInterface, MapContextInterface } from "../types";
-import DemoOptions from "./DemoOptions";
+// import DemoOptions from "./DemoOptions";
 import SurfaceProvider from "../contexts/Surface";
 import SurfaceLayer from "./SurfaceLayer";
 import HexaGraph from "./HexaGraph";
+import { AppContext } from "../contexts/AppStore";
+import { MapContext } from "../contexts/MapStore";
 
 export const SolutionsSurfaceDemo = () => { 
-    const mapContextData = useContext(MapContext);
-    const [mapContextState, setMapContextState] = useState<MapContextInterface>(mapContextData);
-    const appContextData = useContext(AppContext);
-    const [appContextState, setAppContextState] = useState<AppContextInterface>(appContextData);
+    // @ts-ignore
+    const [appContext, appDispatch] = useContext(AppContext);
+    // @ts-ignore
+    const [mapContext, mapDispatch] = useContext(MapContext);
     
-    const geometrySketchCallback = (payload: Object) => setAppContextState({...appContextState, AOIgeometry: payload})
-    const sceneStateCallback = (payload: any) => setMapContextState(payload); 
-    const sketchStateCallback = (payload: __esri.Sketch) => setMapContextState(({...mapContextState, sketch: payload}))
+    // const geometrySketchCallback = (payload: Object) => setAppContextState({...appContextState, AOIgeometry: payload})
+    // const sceneStateCallback = (payload: any) => setMapContextState(payload); 
+    // const sketchStateCallback = (payload: __esri.Sketch) => setMapContextState(({...mapContextState, sketch: payload}))
     const surfaceDataCallback = (payload: any) => { 
         console.log(payload.demoPanel)
         setAppContextState({...appContextState, scoredFields: payload.scoredFields, surfaceResolution: payload.surfaceResolution, demoPanel: payload.demoPanel})
@@ -25,24 +24,22 @@ export const SolutionsSurfaceDemo = () => {
 
     useEffect(() => {
         // console.log('Solutions appContextState', appContextState)
-    }, [appContextState])
+        console.log('SolutionsSurface', appContext)
+        console.log('SolutionsSurface', mapContext)
+    }, [appContext, MapContext])
 
     return (
         <>
-        <AppContext.Provider value={appContextState} >
-        <MapContext.Provider value={mapContextState} >
         <SurfaceProvider>
-            { (appContextState.demoPanel==='CLASSIFY SURFACE' || appContextState.demoPanel==='CALCULATE SURFACE' || appContextState.demoPanel==='SURFACE DATA MODEL') && <HexaGraph /> }
-            <SceneMap sceneStateCallback={sceneStateCallback} >
-                <SketchWidget geometryCallback={geometrySketchCallback} sketchStateCallback={sketchStateCallback}/>
-                <SurfaceLayer  /> 
+            { (appContext.demoPanel==='CLASSIFY SURFACE' || appContext.demoPanel==='CALCULATE SURFACE' || appContext.demoPanel==='SURFACE DATA MODEL') && <HexaGraph /> }
+            <SceneMap >
+                <SketchWidget />
+                <SurfaceLayer /> 
             </SceneMap>
             {/* <LocationNavigationBar cameraStateCallback={cameraStateCallback} />*/}
             {/* { sceneState.view && <CameraUpdate view={sceneState.view} camera={cameraState} /> }*/}
-            <DemoOptions geometryCallback={geometrySketchCallback} surfaceDataCallback={surfaceDataCallback} /> 
+            { /* <DemoOptions geometryCallback={geometrySketchCallback} surfaceDataCallback={surfaceDataCallback} /> */}
         </SurfaceProvider>
-        </MapContext.Provider>
-        </AppContext.Provider>
         </>
     )
 }
