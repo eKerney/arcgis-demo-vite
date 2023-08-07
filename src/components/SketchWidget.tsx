@@ -1,34 +1,37 @@
 import Sketch from "@arcgis/core/widgets/Sketch";
-import { useEffect, useContext, useState, useCallback } from "react"; 
-import { AppContext } from "../contexts/AppContext";
-import { MapContext } from "../contexts/MapContext";
-import { MapContextInterface } from "../types";
+import { useEffect, useContext, useCallback } from "react"; 
+import { AppContext } from "../contexts/AppStore";
+import { MapContext } from "../contexts/MapStore";
 
-export const SketchWidget = ({ geometryCallback, sketchStateCallback }) => {
-    const mapContextData = useContext(MapContext);
-    const appContextData = useContext(AppContext);
+export const SketchWidget = () => {
+    // @ts-ignore
+    const [appContext, appDispatch] = useContext(AppContext);
+    // @ts-ignore
+    const [mapContext, mapDispatch] = useContext(MapContext);
 
     const renderSketchWidget = useCallback(() => {
-        if (mapContextData.view.ui) {
-            mapContextData.view.when(() => {
+        if (mapContext.view.ui) {
+            mapContext.view.when(() => {
                 const sketch = new Sketch({
-                    layer: mapContextData.graphicsLayer,
-                    view: mapContextData.view,
+                    layer: mapContext.graphicsLayer,
+                    view: mapContext.view,
                     creationMode: "update",
                     layout: "vertical",
                     availableCreateTools: ["polygon", "rectangle", "circle"],
                     defaultCreateOptions: { hasZ: false },
                 });
             // add sketch widget to map
-            mapContextData.view.ui.add(sketch, "top-left");
+            mapContext.view.ui.add(sketch, "top-left");
             // set geometry as sketch if drawing is complete
-            appContextData.AOIgeometry && geometryCallback(appContextData.AOIgeometry) 
-            sketch.on("create", (event) => event.state === "complete" && geometryCallback(event.graphic.toJSON().geometry.rings[0]))
+            mapContext.AOIgeometry && appDispatch({ type: 'AOIgeometry', payload: appContext.AOIgeometry })    //geometryCallback(appContextData.AOIgeometry) 
+            sketch.on("create", (event: any) => event.state === "complete" && appDispatch({ type: 'AOIgeometry', payload: event.graphic.toJSON().geometry.rings[0] }) )
+            //geometryCallback(event.graphic.toJSON().geometry.rings[0]))
             // send sketch widget state back if widget needs to be update for additional functions
-            sketchStateCallback(sketch)
+            mapDispatch({ type: 'sketch', payload: sketch });
+            // sketchStateCallback(sketch)
         });
         }
-    }, [mapContextData.scene])
+    }, [mapContext.scene])
 
     useEffect(() => {
         // DemoContext.AOIgeometry 
@@ -36,8 +39,8 @@ export const SketchWidget = ({ geometryCallback, sketchStateCallback }) => {
         //     : scene && renderSketchWidget()
         // console.log('mapContextData in sketch')
         // console.log(mapContextData)
-        mapContextData.scene && renderSketchWidget()
-    }, [mapContextData.scene])    
+        mapContext.scene && renderSketchWidget()
+    }, [mapContext.scene])    
     return <></>
 }
 

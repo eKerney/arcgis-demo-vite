@@ -1,0 +1,134 @@
+{
+  "resolution": 9,
+  "scoring": {
+    "LOW": 5,
+    "MED": 50,
+    "HIGH": 200
+  },
+  "layers": [
+    {
+      "code": "lulc",
+      "fields": [
+        "mode"
+      ],
+      "score": "LOW",
+      "fieldType": "",
+      "newField": "",
+      "expr": []
+    },
+    {
+      "fields": [
+        "global_id"
+      ],
+      "code": "airports",
+      "score": "HIGH",
+      "expr": "",
+      "fieldType": "",
+      "newField": ""
+    },
+    {
+      "fields": [
+        "global_id"
+      ],
+      "code": "balloonports",
+      "score": "HIGH",
+      "expr": "",
+      "fieldType": "",
+      "newField": ""
+    },
+    {
+      "fields": [
+        "objectid"
+      ],
+      "code": "water_bodies",
+      "score": "HIGH",
+      "expr": "",
+      "fieldType": "",
+      "newField": ""
+    }
+  ],
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          -118.25721953078876,
+          34.062425851944674
+        ],
+        [
+          -118.2497290020949,
+          34.062425851944674
+        ],
+        [
+          -118.2497290020949,
+          34.04652763225858
+        ],
+        [
+          -118.25721953078876,
+          34.04652763225858
+        ],
+        [
+          -118.25721953078876,
+          34.062425851944674
+        ]
+      ]
+    ]
+  }
+}
+{
+  "resolution": 9,
+  "scoring": {
+    "LOW": 5,
+    "MED": 50,
+    "HIGH": 200
+  },
+  "layers": [
+    {
+      "code": "lulc",
+      "fields": [
+        "mode"
+      ],
+      "score": "BASE",
+      "fieldType": "",
+      "newField": "",
+      "expr": []
+    },
+    {
+      "fields": [
+        "objectid"
+      ],
+      "code": "child_care_center",
+      "score": "HIGH",
+      "expr": "",
+      "fieldType": "",
+      "newField": ""
+    }
+  ],
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          -118.26273171154807,
+          34.05985098473835
+        ],
+        [
+          -118.25105127433038,
+          34.05985098473835
+        ],
+        [
+          -118.25105127433038,
+          34.045635978228006
+        ],
+        [
+          -118.26273171154807,
+          34.045635978228006
+        ],
+        [
+          -118.26273171154807,
+          34.05985098473835
+        ]
+      ]
+    ]
+  }
+}

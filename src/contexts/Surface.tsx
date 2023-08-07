@@ -1,10 +1,8 @@
 import { createContext, useState, useEffect, useCallback, useContext } from 'react'
 import axios from 'axios'
 import Spinner from '../components/Spinner';
-import { AppContext } from './AppContext';
-import { GeoJSONinterface, MapContextInterface, SurfaceInterface } from '../types';
-
-// const metadata = require('../components/metaDataJOINobj.json');
+import { GeoJSONinterface, SurfaceInterface } from '../types';
+import { AppContext } from './AppStore';
 import metadata from '../components/metadata.json';
 //
 // const BASE_URI=process.env.REACT_APP_BASE_URI
@@ -16,7 +14,8 @@ import metadata from '../components/metadata.json';
 export const SurfaceContext = createContext<SurfaceInterface>({GeoJSONblob: '', fields: {}, fieldInfos: {}, hexTypes: [], parsedGeoJSON: {type: '', features: []}, blob: new Blob([])})
 
 const SurfaceProvider = ({ children }) => {
-    const appContextData = useContext(AppContext);
+    // @ts-ignore
+    const [appContext, appDispatch] = useContext(AppContext);
     const [surface, setSurface] = useState<SurfaceInterface>({
         GeoJSONblob: '', fields: {}, fieldInfos: {}, hexTypes: [], 
         parsedGeoJSON: {type: '', features: []}, blob: new Blob([]) 
@@ -24,36 +23,32 @@ const SurfaceProvider = ({ children }) => {
     const [loading, setLoading] = useState<Boolean>(true);
 
     const fetchSurface = useCallback(async () => {
+      console.log('fetchSurface');
+      console.log(appContext.surfaceRequest);
       setLoading(true)
       let requestData = { 
-        "resolution": appContextData.surfaceResolution, 
+        "resolution": appContext.surfaceResolution, 
         "scoring": { "LOW": 5, "MED": 50, "HIGH": 200 },
         "layers": [
             { "code": "lulc", "fields": ["mode"], "score": "BASE", "fieldType": "", "newField": "", "expr": []},
         ],
         "geometry": {
           "type": "Polygon",
-          "coordinates": [appContextData.AOIgeometry]
+          "coordinates": [appContext.AOIgeometry]
         },
       };
 
-        if (appContextData.scoredFields.length !== 0) {
-                appContextData.scoredFields.forEach(d => {
+        if (appContext.scoredFields.length !== 0) {
+                appContext.scoredFields.forEach(d => {
                     // special cases for calculated value layers 
                     const field = ((d.field).split('_'))[0];
                     const funcExpr = metadata[field].CODE === 'roads' ? d.func.join("|")
                         : d.func
-                    // console.log(d);
-                    // console.log(funcExpr)
                     // if layer contains objectid then use objectid as attribute>
                     // else use first attribute in attribute array
                     const feature = {
                         "fields": [metadata[field].FIELDS[0]],
-                        // "fields": metadata[field].FIELDS.includes('objectid') 
-                        //     ? ["objectid"]
-                        //     :  [metadata[field].FIELDS[0]],
                         "code": metadata[((d.field).split('_'))[0]].CODE,
-                        // "code": metadata[d.field].CODE,
                         "score": d.func.length > 0 
                             ? d.funcScore 
                             : d.score,
@@ -67,8 +62,6 @@ const SurfaceProvider = ({ children }) => {
                                 : metadata[field].CODE === 'roads' 
                                     ? 'MATCH_PARTIAL'
                                     : 'FUNC',
-                            // ? funcType 
-                            // : "",
                         "newField": d.func.length > 0
                             ? d.field
                             : ""
@@ -87,11 +80,11 @@ const SurfaceProvider = ({ children }) => {
             },
             data : data
         };
-        if (Object.keys(appContextData.AOIgeometry).length !== 0 && Object.keys(appContextData.scoredFields).length !== 0) {
+        if (Object.keys(appContext.AOIgeometry).length !== 0 && Object.keys(appContext.scoredFields).length !== 0) {
               console.log('request', requestData);
                 axios(config)
                   .then(function (response) {
-                    console.log('IN DATA FETCH');
+                      console.log('ran request');
                     // parse reqeust from API as GeoJSON
                     const parsedGeoJSON: GeoJSONinterface = JSON.parse(response.data);
                     // extract feature properties from GeoJSON.features[0]
@@ -117,37 +110,36 @@ const SurfaceProvider = ({ children }) => {
                           .concat(Array(hexPer[1]).fill(50))
                           .concat(Array(hexPer[2]).fill(5))
                     // surface context contains geoJSONblob, fields and fieldInfos for layer rendering
-                    // setSurface([geoJSONblob, fields, fieldInfos, hexTypes, parsedGeoJSON, blob]);
                     setSurface({GeoJSONblob: geoJSONblob, fields: fields, fieldInfos: fieldInfos, 
                         hexTypes: hexTypes, parsedGeoJSON: parsedGeoJSON, blob: blobData
                     })
                     setLoading(false)
+                    appDispatch({ type: 'surfaceRequest', payload: false })
+                    console.log('in change state portion')
                   })
                   .catch(function (error: Error) {
                     console.log(error);
                   });
         }
-  }, [appContextData.scoredFields])
+  }, [appContext.surfaceRequest])
    
     useEffect(() => {
-        fetchSurface()
-        // console.log('fetchSurface');
-        // console.log(appContextData);
+        appContext.surfaceRequest && fetchSurface()
     }, [fetchSurface])
 
     useEffect(() => {
       // clears surface data when reset surface button is clicked
-        appContextData.demoPanel === 'REFRESH MAP' && setSurface({
+        appContext.demoPanel === 'RESET SURFACE' && setSurface({
             GeoJSONblob: '', fields: {}, fieldInfos: {}, 
             hexTypes: [], parsedGeoJSON: {type: '', features: []}, blob: new Blob([])
        }); 
-    }, [appContextData.demoPanel])
+    }, [appContext.demoPanel])
 
     const context = surface 
 
   return (
   <>
-  {loading && appContextData.scoredFields.length !== 0  && <Spinner /> }
+  {loading && appContext.surfaceRequest === true && <Spinner /> }
   <SurfaceContext.Provider value={context}>{children}</SurfaceContext.Provider>
   </> 
   )

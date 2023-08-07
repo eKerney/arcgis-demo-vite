@@ -1,23 +1,26 @@
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useContext, useState } from 'react';
-import { MapContext } from '../contexts/MapContext';
-import { AppContext } from '../contexts/AppContext';
+import { useContext } from 'react';
+import { AppContext } from '../contexts/AppStore';
+import { MapContext } from '../contexts/MapStore';
 
-export const RemoveSurfaceButton = ({ surfaceDataCallback, geometryCallback }) => {
-    const mapContextData = useContext(MapContext);
-    const appContextData = useContext(AppContext);
-    const [appContextState, setAppContextState] = useState(appContextData);
-
+export const RemoveSurfaceButton = () => {
+    // @ts-ignore
+    const [appContext, appDispatch] = useContext(AppContext);
+    // @ts-ignore
+    const [mapContext, mapDispatch] = useContext(MapContext);
     const resetMapLayer = () => {
-        mapContextData.graphicsLayer.removeAll()
-        surfaceDataCallback({
-            scoredFields: appContextState.scoredFields, 
-            demoPanel: 'RESET SURFACE',
-            surfaceResolution: appContextState.surfaceResolution,
-        });
-        geometryCallback(null)
+        mapContext.graphicsLayer.removeAll()
+        appDispatch({ type: 'surfaceData', 
+                    payload: { 
+                        scoredFields: appContext.scoredFields, 
+                        demoPanel: 'RESET SURFACE', 
+                        surfaceResolution: appContext.surfaceResolution,
+                        surfaceRequest: false,
+                    }
+        }); 
+        appDispatch({ type: 'AOIgeometry', payload: {} })
     }
 
     return (

@@ -1,14 +1,16 @@
 import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import GeoJSONLayer from "@arcgis/core/layers/GeoJSONLayer";
 import { SurfaceContext } from "../contexts/Surface";
-import { AppContext } from "../contexts/AppContext";
-import { MapContext } from "../contexts/MapContext";
+import { AppContext } from "../contexts/AppStore";
+import { MapContext } from "../contexts/MapStore";
 
 export const SurfaceLayer = () => {
     const surface = useContext(SurfaceContext);
     const [surfaceMapReference, setSurfaceMapReference] = useState(null);
-    const appContextData = useContext(AppContext);
-    const mapContextData = useContext(MapContext);
+    // @ts-ignore
+    const [appContext, appDispatch] = useContext(AppContext);
+    // @ts-ignore
+    const [mapContext, mapDispatch] = useContext(MapContext);
 
     const renderClassifySurface = () => {
         const renderer = {
@@ -48,7 +50,7 @@ export const SurfaceLayer = () => {
             popupTemplate: popup,
             elevationInfo: 'relative-to-ground',
         });
-        surface.GeoJSONblob && mapContextData.scene.add(geoJSONsurface);
+        surface.GeoJSONblob && mapContext.scene.add(geoJSONsurface);
         setSurfaceMapReference(geoJSONsurface);
     }
 
@@ -87,26 +89,22 @@ export const SurfaceLayer = () => {
             popupTemplate: popup,
             elevationInfo: 'relative-to-ground',
         });
-        surface.GeoJSONblob && mapContextData.scene.add(geoJSONsurface);
+        surface.GeoJSONblob && mapContext.scene.add(geoJSONsurface);
         setSurfaceMapReference(geoJSONsurface);
     }
 
     const removeSurfaceLayer = () => {
         console.log('removeSurfaceLayer')
-        mapContextData.scene.remove(surfaceMapReference);
+        mapContext.scene.remove(surfaceMapReference);
     }
 
     useLayoutEffect(() => {
-        appContextData.demoPanel === 'SELECT DATA SURFACE'
+        mapContext.demoPanel === 'SELECT DATA SURFACE'
             ? renderSelectDataSurface() 
-            : appContextData.demoPanel === 'RESET SURFACE' 
+            : appContext.demoPanel === 'RESET SURFACE' 
                 ? removeSurfaceLayer()
                 : renderClassifySurface();
-    }, [surface.GeoJSONblob, appContextData.demoPanel]);
-
-    useEffect(() => {
-        console.log('surface layer appContextData update');
-    }, [appContextData])
+    }, [surface.GeoJSONblob, appContext.demoPanel]);
 
     return (
     <></>

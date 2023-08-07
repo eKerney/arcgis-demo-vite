@@ -19,6 +19,7 @@ export interface AppContextInterface {
     demoType?: string; 
     demoPanel?: string; 
     cameraLocation?: CameraPosition; 
+    placeName?: string;
     availableLayers?: Array; 
     fieldDomains?: Array; 
     scoredFields?: Object[]; 
@@ -26,6 +27,8 @@ export interface AppContextInterface {
     basemap?: string;
     waypointsGeometry?: Object;
     surfaceResolution?: number;
+    surfaceRequest?: Boolean;
+    selectedFields?: Object[];
 }
 
 export interface MapContextInterface {
@@ -55,6 +58,12 @@ export interface SurfaceInterface {
     blob?: Blob;
 }
 
+export interface SurfaceData {
+    demoPanel: string;
+    scoredFields: Object[]; 
+    surfaceResolution: number;
+}
+
 export type MapAction = {
     SCENE: string;
     VIEW: string;
@@ -67,6 +76,7 @@ export type AppAction = {
     DEMOTYPE: string;
     DEMOPANEL: string;
     CAMERALOCATION: string;
+    PLACENAME: string;
     AVAILABLELAYERS: string;
     FIELDDOMAINS: string;
     SCOREDFIELDS: string;
@@ -74,6 +84,9 @@ export type AppAction = {
     BASEMAP: string;
     WAYPOINTSGEOMETRY: string;
     SURFACERESOLUTION: string;
+    SURFACEDATA: string;
+    SURFACEREQUEST: string;
+    SELECTEDFIELDS: string;
 }
     
 export type Action = {

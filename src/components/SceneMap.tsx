@@ -11,8 +11,6 @@ export const SceneMap = ({ children }) => {
     const [appContext, appDispatch] = useContext(AppContext);
     // @ts-ignore
     const [mapContext, mapDispatch] = useContext(MapContext);
-    // const mapContextData  = useContext(MapContext);
-    // const appContextData = useContext(AppContext); 
     const mapDiv = useRef(null);
 
     const createMap = useEffect(() => {
@@ -40,11 +38,10 @@ export const SceneMap = ({ children }) => {
         }); 
         scene.add(OSM3Dbuildings);
         mapDispatch({ type: 'sceneViewGraphics', payload: {scene: scene, view: view, graphicsLayer: graphicsLayer }})
-        // sceneStateCallback({...mapContextData, view: view, scene: scene, graphicsLayer: graphicsLayer})
 
         return () => { view && view.destroy() };
         }
-    }, []);
+    }, [appContext.cameraLocation]);
 
 
   return (

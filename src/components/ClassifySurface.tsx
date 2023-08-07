@@ -12,41 +12,27 @@ import { SurfaceContext } from "../contexts/Surface";
 import SurfaceResolutionSelector from './SurfaceResolutionSelector';
 import RemoveSurfaceButton from './RemoveSurfaceButton';
 import layersData from '../components/layersData.json'; 
-import { AppContext } from '../contexts/AppContext';
-import { AppContextInterface } from '../types';
 import { requestSurfaceButton, exportSurfaceButton } from '../utilities/utilityComponents';
 import { MenuProps, getStyles } from '../utilities/utilityFunctions.ts';
+import { AppContext } from '../contexts/AppStore.tsx';
 
 // ClassifySurface Panel for SolutionsSurface, SkyPath Demos, MultiPath, ReadyToFly Demos
-export const ClassifySurface = ({ surfaceDataCallback, geometryCallback}) => {
-    const appContextData = useContext(AppContext);
-    const [appContextState, setAppContextState] = useState<AppContextInterface>(appContextData)
+export const ClassifySurface = () => {
+    // @ts-ignore
+    const [appContext, appDispatch] = useContext(AppContext);
     const surface = useContext(SurfaceContext);
     const theme = useTheme();
-    const [selectedFields, setSelectedFields] = useState([]);
-    const [scoredFields, setScoredFields] = useState<Object[]>([]); 
+    const [selectedFields, setSelectedFields] = useState(appContext.selectedFields);
+    const [scoredFields, setScoredFields] = useState(appContext.scoredFields); 
     const layers = ((layersData.layers.filter(d => !layersData.excludeClassify.includes(d))).filter(d => !layersData.problemLayers.includes(d))).sort();
-    const surfaceResolutionCallback = (payload: any) => setAppContextState({...appContextState, surfaceResolution: payload})
     const setHeight = () => selectedFields.length === 0 ? '400px' : (`${selectedFields.length*100+480}px`)  
-    // const [surfaceResolution, setSurfaceResolution] = useState(null); 
-    // const layers = ((layersData.layers.filter(d => !layersData.excludeClassify.includes(d))).filter(d => !layersData.problemLayers.includes(d))).sort();
-    // const appContextData = useContext(AppContext);
-    // const [appContextState, setAppContextState] = useState<AppContextInterface>(appContextData)
-    //
-    // const surface = useContext(SurfaceContext);
-    // const theme = useTheme();
-    // const [selectedFields, setSelectedFields] = useState([]);
-    // const [scoredFields, setScoredFields] = useState([]); 
-    // const [surfaceResolution, setSurfaceResolution] = useState(null); 
-    // functions for setting surfaceResolution and submitting surfaceField Payload, passed back up to parents to the Surface Context
-    // const surfaceResolutionCallback = payload => setSurfaceResolution(payload)
-    // const submitSurfaceFields = () => onDemoSelect([scoredFields, 2, surfaceResolution]);
 
     // set selectedFields state when added to chip selector
     const handleFieldChange = ({ target: { value }, }) => {
         setSelectedFields( typeof value === 'string' ? value.split(',') : value,);
-        setScoredFields(value.map(field => ({field: field, score: 'LOW', func: []})));
-        setAppContextState({...appContextState, scoredFields: scoredFields})
+        setScoredFields(value.map((field: any) => ({field: field, score: 'LOW', func: []})));
+        appDispatch({ type: 'scoredFields', payload: scoredFields })
+        appDispatch({ type: 'selectedFields', payload: selectedFields })
     };
 
     const handleScoreChange = ({ target: { value, name}, }) => {
@@ -57,7 +43,8 @@ export const ClassifySurface = ({ surfaceDataCallback, geometryCallback}) => {
                 : {...scoredField }
         ));
         console.log(scoredFields)
-        setAppContextState({...appContextState, scoredFields: scoredFields})
+        appDispatch({ type: 'scoredFields', payload: scoredFields })
+        appDispatch({ type: 'selectedFields', payload: selectedFields })
     }
 
     // render UI for Layer Select 
@@ -121,7 +108,7 @@ export const ClassifySurface = ({ surfaceDataCallback, geometryCallback}) => {
             </>
     )}
 
-// primary jsx return
+    // primary jsx return
     return  (
         <>
             <div className="control-panel" style={{ height: setHeight() }} >
@@ -132,17 +119,15 @@ export const ClassifySurface = ({ surfaceDataCallback, geometryCallback}) => {
                 <br />
                 <br />
                 {renderLayerScoring()}
-                <SurfaceResolutionSelector resolutionCallback={surfaceResolutionCallback}/> 
-                {scoredFields && appContextState.surfaceResolution && requestSurfaceButton(surfaceDataCallback, appContextState, 'CLASSIFY SURFACE')}
+                <SurfaceResolutionSelector /> 
                 <br />
-                {surface.GeoJSONblob && exportSurfaceButton(surface)}
+                {(scoredFields && appContext.surfaceResolution !==0) && requestSurfaceButton(appContext, appDispatch)}
+                <br />
+                {surface.GeoJSONblob && exportSurfaceButton()}
                 {/*(demoState === 'AirHub SkyPath'||demoState==='AirHub MultiPath'||demoState==='AirHub ReadyToFly') && surface && 
                     <UASrouting secondaryCallback={secondaryCallback} scene={scene} demoState={demoState} />*/ } 
                 <br />
-                { surface.GeoJSONblob && <RemoveSurfaceButton 
-                    surfaceDataCallback={surfaceDataCallback} 
-                    geometryCallback={geometryCallback}
-                />}
+                { surface.GeoJSONblob && <RemoveSurfaceButton />}
             </div>
         </>
     )    

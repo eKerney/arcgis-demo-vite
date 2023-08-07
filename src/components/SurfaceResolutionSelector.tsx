@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { AppContext } from '../contexts/AppStore';
 import { Box, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
 
-export const SurfaceResolutionSelector = ({ resolutionCallback }: {resolutionCallback: (payload: number) => void }) => {
-  const [res, setRes] = React.useState('');
+export const SurfaceResolutionSelector = () => {
+    // @ts-ignore
+    const [appContext, appDispatch] = useContext(AppContext);
 
-  const handleChange = (event: Event) => {
-      setRes(event.target.value);
-      resolutionCallback(event.target.value);
-  };
+  // const handleChange = (event: Event) => {
+      // setRes(event.target.value);
+      // resolutionCallback(event.target.value);
+  // };
 
   return (
     <Box style={{position: 'relative', width: 200, left: 38, top: 0}}
@@ -18,9 +20,9 @@ export const SurfaceResolutionSelector = ({ resolutionCallback }: {resolutionCal
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={res}
+          value={appContext.surfaceResolution}
           label="Surface Resolution"
-          onChange={handleChange}
+          onChange={((event: Event) => appDispatch({ type: 'surfaceResolution', payload: event.target.value }) )}
         >
           <MenuItem value={9}>COARSE - 9</MenuItem>
           <MenuItem value={10}>LOW - 10</MenuItem>

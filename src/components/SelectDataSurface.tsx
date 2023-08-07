@@ -12,28 +12,28 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import layersData from '../components/layersData.json'; 
-import PanelFormatting from '../utilities/PanelFormatting.ts'
-import { AppContext } from '../contexts/AppContext';
-import { AppContextInterface } from '../types';
 import { requestSurfaceButton, exportSurfaceButton } from '../utilities/utilityComponents';
 import { MenuProps, getStyles } from '../utilities/utilityFunctions.ts';
+import { AppContext } from '../contexts/AppStore.tsx';
 
-export const SelectDataSurface = ({ surfaceDataCallback, geometryCallback}) => {
-    const appContextData = useContext(AppContext);
-    const [appContextState, setAppContextState] = useState<AppContextInterface>(appContextData)
+export const SelectDataSurface = ({}) => {
+    // @ts-ignore
+    const [appContext, appDispatch] = useContext(AppContext);
     const surface = useContext(SurfaceContext);
     const theme = useTheme();
-    const [selectedFields, setSelectedFields] = useState([]);
-    const [scoredFields, setScoredFields] = useState([]); 
+
+    const [selectedFields, setSelectedFields] = useState(appContext.selectedFields);
+    const [scoredFields, setScoredFields] = useState(appContext.scoredFields); 
     const layers = ((layersData.layers.filter(d => !layersData.excludeClassify.includes(d))).filter(d => !layersData.problemLayers.includes(d))).sort();
     // NOTE: Look to remove need for surfaceResolutionCallback in future 
-    const surfaceResolutionCallback = (payload: any) => setAppContextState({...appContextState, surfaceResolution: payload})
     const setHeight = () => selectedFields.length === 0 ? '500px' : (`${selectedFields.length*48+380}px`)  
 
     const handleFieldChange = ({ target: { value }, }) => {
         setSelectedFields( typeof value === 'string' ? value.split(',') : value,);
-        setScoredFields(value.map(field => ({field: field, score: 'HIGH', func: []})));
-        setAppContextState({...appContextState, scoredFields: scoredFields})
+        setScoredFields(value.map((field: any) => ({field: field, score: 'HIGH', func: []})));
+        appDispatch({ type: 'scoredFields', payload: scoredFields })
+        appDispatch({ type: 'selectedFields', payload: selectedFields })
+        console.log('selectData', appContext);
     };
 
     return  (
@@ -75,16 +75,13 @@ export const SelectDataSurface = ({ surfaceDataCallback, geometryCallback}) => {
         <br />
     <br />  
     <Box textAlign='center'>
-        <SurfaceResolutionSelector resolutionCallback={surfaceResolutionCallback}/> 
+        <SurfaceResolutionSelector /> 
         <br />  
-        {(scoredFields && appContextState.surfaceResolution !==0) && requestSurfaceButton(surfaceDataCallback, appContextState, 'SELECT DATA')}
+        {(scoredFields && appContext.surfaceResolution !==0 && appContext.AOIgeometry.length > 0) && requestSurfaceButton(appContext, appDispatch)}
         <br />  
-        {surface.GeoJSONblob && exportSurfaceButton(surface)}
+        {surface.GeoJSONblob && exportSurfaceButton()}
         <br />
-        { surface.GeoJSONblob && <RemoveSurfaceButton 
-            surfaceDataCallback={surfaceDataCallback} 
-            geometryCallback={geometryCallback}
-        />}
+        { surface.GeoJSONblob && <RemoveSurfaceButton currentDemoPanel={appContext.demoPanel}/>}
     </Box>
     </div>
   </>

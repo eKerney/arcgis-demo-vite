@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -20,34 +20,23 @@ import ClassifySurface from './ClassifySurface';
 // import SurfaceModel from './SurfaceModel';
 import { Tooltip } from '@mui/material';
 import logo from '../assets/ASLLogoStack.png'
-// import ElevatePanel from "./ElevatePanel";
-import { AppContext } from "../contexts/AppContext";
 import { SurfaceContext } from "../contexts/Surface";
-import { MapContext } from "../contexts/MapContext";
+import { AppContext } from "../contexts/AppStore";
+// import ElevatePanel from "./ElevatePanel";
 // import { RouteContext } from "../contexts/Route";
 // import UploadAOIpanel from "./UploadAOIpanel";
 
-export const DemoOptions = ({ surfaceDataCallback, geometryCallback, }) => {
+export const DemoOptions = ({ }) => {
     const drawerWidth = 70;
     const logoStyle = {marginTop: -40, marginBottom: 20, marginRight: 2}
-    // const [demoType, setDemoType] = useState('');
     const surface = useContext(SurfaceContext);
     // const { route } = useContext(RouteContext);
-    // const { demo } = useContext(DemoContext);
     const [files, setFiles] = useState([]);
-    // newly added
-    const appContextData = useContext(AppContext);
-    const [appContextState, setAppContextState] = useState<AppContextInterface>(appContextData);
-    const mapContextData = useContext(MapContext);
+    // @ts-ignore
+    const [appContext, appDispatch] = useContext(AppContext);
+
     const handleClick = (event, text: string) =>  {
-        // console.log(text)
-        // console.log(event)
-        setAppContextState(previous => ({...previous, demoPanel: text.toUpperCase()}) ) 
-        surfaceDataCallback({
-            scoredFields: appContextState.scoredFields, 
-            demoPanel: text.toUpperCase(),
-            surfaceResolution: appContextState.surfaceResolution,
-        });
+        appDispatch({ type: 'demoPanel', payload: text.toUpperCase() });
     }
 
     //file upload working section
@@ -65,33 +54,33 @@ export const DemoOptions = ({ surfaceDataCallback, geometryCallback, }) => {
   const handleFileUpload = (event: Event) => setFiles(event)
 
   const demoOptionsList = [
-    ...((appContextData.demoType ==='AirHub SkyPath' || appContextData.demoType==='AirHub Elevate' || appContextData.demoType==='AirHub MultiPath' 
-        || appContextData.demoType==='AirHub ReadyToFly') ? [] : ['SELECT DATA SURFACE']),
-    ...((appContextData.demoType==='AirHub Elevate') ? [] : ['CLASSIFY SURFACE']),
-    ...((appContextData.demoType==='AirHub Elevate') ? [] : ['CALCULATE SURFACE']),
-    ...((appContextData.demoType==='AirHub Elevate') ? [] : ['SURFACE DATA MODEL']),
+    ...((appContext.demoType ==='AirHub SkyPath' || appContext.demoType==='AirHub Elevate' || appContext.demoType==='AirHub MultiPath' 
+        || appContext.demoType==='AirHub ReadyToFly') ? [] : ['SELECT DATA SURFACE']),
+    ...((appContext.demoType==='AirHub Elevate') ? [] : ['CLASSIFY SURFACE']),
+    ...((appContext.demoType==='AirHub Elevate') ? [] : ['CALCULATE SURFACE']),
+    ...((appContext.demoType==='AirHub Elevate') ? [] : ['SURFACE DATA MODEL']),
     ...['REFRESH MAP'],
     ...['UPLOAD AOI GEOMETRY']
   ];
   const demoIconsList = [
-    ...((appContextData.demoType==='AirHub SkyPath' || appContextData.demoType==='AirHub Elevate'|| appContextData.demoType==='AirHub MultiPath' 
-        || appContextData.demoType==='AirHub ReadyToFly') ? [] : [<DoneOutlineIcon className='icon' />]),
-    ...(appContextData.demoType!=='AirHub Elevate' ? [<RuleIcon className='icon' />] : []),
-    ...(appContextData.demoType!=='AirHub Elevate' ? [<CalculateIcon className='icon'/>] : []),
-    ...(appContextData.demoType!=='AirHub Elevate' ? [<AccountTreeIcon className='icon'/>] : []),
+    ...((appContext.demoType==='AirHub SkyPath' || appContext.demoType==='AirHub Elevate'|| appContext.demoType==='AirHub MultiPath' 
+        || appContext.demoType==='AirHub ReadyToFly') ? [] : [<DoneOutlineIcon className='icon' />]),
+    ...(appContext.demoType!=='AirHub Elevate' ? [<RuleIcon className='icon' />] : []),
+    ...(appContext.demoType!=='AirHub Elevate' ? [<CalculateIcon className='icon'/>] : []),
+    ...(appContext.demoType!=='AirHub Elevate' ? [<AccountTreeIcon className='icon'/>] : []),
     ...[<RefreshIcon className='icon'/>, <UploadFileOutlinedIcon className='icon'/>] 
   ];
 
     const renderControlPanel = () => {
         return (
-            appContextState.demoPanel  === 'REFRESH MAP' 
+            appContext.demoPanel  === 'REFRESH MAP' 
             ? window.location.reload(false) 
             // : appContextData.demoType === 'AirHub ReadyToFly' && surface && route 
             // ? <ElevatePanel onDemoSelect={onDemoSelect} elevateParamsCallback={elevateParamsCallback}/> 
-            : appContextState.demoPanel === 'SELECT DATA SURFACE' 
-            ? <SelectDataSurface geometryCallback={geometryCallback} surfaceDataCallback={surfaceDataCallback} /> 
-            : appContextState.demoPanel === 'CLASSIFY SURFACE'
-            ? <ClassifySurface geometryCallback={geometryCallback} surfaceDataCallback={surfaceDataCallback} /> 
+            : appContext.demoPanel === 'SELECT DATA SURFACE' 
+            ? <SelectDataSurface /> 
+            : appContext.demoPanel === 'CLASSIFY SURFACE'
+            ? <ClassifySurface /> 
             // : appContextData.demoPanel === 'CALCULATE SURFACE' 
             // ? <CalculateSurface geometryCallback={geometryCallback} demoState={appContextData.demoType} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
             // : appContextData.demoPanel === 'SURFACE DATA MODEL' 

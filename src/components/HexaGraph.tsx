@@ -1,12 +1,13 @@
-import { useRef, useEffect, useContext, useLayoutEffect } from "react";
+import { useRef, useContext, useLayoutEffect } from "react";
 import * as d3 from "d3";
 import { SurfaceContext } from "../contexts/Surface";
-// import Box from '@mui/material/Box';
-// import Container from '@mui/material/Container';
-
-const HexaGraph = (props) => {
+import { AppContext } from "../contexts/AppStore";
+  
+const HexaGraph = () => {
     const surface = useContext(SurfaceContext);
     const d3Container = useRef(null);
+    // @ts-ignore
+    const [appContext, appDispatch] = useContext(AppContext);
 
     const renderHexagraph = () => {
         d3.selectAll('path.hex').remove()
@@ -85,9 +86,10 @@ const HexaGraph = (props) => {
     }
 
     useLayoutEffect(() => {
-        surface.hexTypes && renderHexagraph()
+        // surface.hexTypes && renderHexagraph()
+        appContext.surfaceRequest && renderHexagraph()
         console.log('ran hexagraph')
-    }, [surface, d3Container.current]);
+    }, [appContext.surfaceRequest, d3Container.current]);
 
   return (
       <>

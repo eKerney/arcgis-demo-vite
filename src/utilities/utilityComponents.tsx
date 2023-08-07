@@ -3,25 +3,25 @@ import Box from '@mui/material/Box';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import PublishIcon from '@mui/icons-material/Publish';
 import { exportSurfaceData, submitSurfaceFields } from './utilityFunctions';
-import { AppContextInterface, SurfaceInterface } from "../types"
+import { AppContextInterface } from '../types';
 
-export const exportSurfaceButton = (surface: SurfaceInterface) => (
+export const exportSurfaceButton = () => (
     <Box textAlign='center'>
         <Button 
             variant="outlined" 
             startIcon={<CloudDownloadIcon />}
-            onClick={(() => exportSurfaceData(surface))}>
+            onClick={(() => exportSurfaceData())}>
             Export Surface
         </Button> 
     </Box>
 )
 
-export const requestSurfaceButton = (surfaceDataCallback, appContextState: AppContextInterface, demoPanel: string) => (     
+export const requestSurfaceButton = (appContext: AppContextInterface, appDispatch) => (     
     <Box textAlign='center'>
         <Button 
             variant="contained" 
             startIcon={<PublishIcon />}
-            onClick={(() => submitSurfaceFields(surfaceDataCallback, appContextState, demoPanel))}>
+            onClick={(() => submitSurfaceFields(appContext, appDispatch))}>
             Surface Request
         </Button>
     </Box>

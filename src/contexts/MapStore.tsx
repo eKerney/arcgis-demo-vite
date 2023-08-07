@@ -14,11 +14,17 @@ const mapActionType: MapAction = {
     SCENEVIEWGRAPHICS: 'sceneViewGraphics'
 }
 
+// export const initialMapState: MapContextInterface = {
+//     scene: new WebScene(),
+//     view: new SceneView(),
+//     sketch: new Sketch(),
+//     graphicsLayer: new GraphicsLayer(),
+// }
 export const initialMapState: MapContextInterface = {
-    scene: new WebScene(),
-    view: new SceneView(),
-    sketch: new Sketch(),
-    graphicsLayer: new GraphicsLayer(),
+    scene: {}, 
+    view: {},
+    sketch: {}, 
+    graphicsLayer: {} 
 }
 
 export const MapContext = createContext(initialMapState) 

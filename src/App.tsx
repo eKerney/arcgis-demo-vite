@@ -40,11 +40,6 @@ export const App = () => {
     // @ts-ignore
     const [mapContext, mapDispatch] = useContext(MapContext);
     
-    useEffect(() => {
-        console.log('app', appContext);
-        // console.log('dispatch', dispatch({ type: 'demoType', payload: 'AHHHHHH' }))
-    }, [appContext] )
-
     return (
         <>
         <ThemeProvider theme={darkTheme}>
