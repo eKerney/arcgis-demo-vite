@@ -1,0 +1,26 @@
+{
+    "domainSelectLayers": [
+        "Roads","Land use land cover","UAS Facility Management Flight Ceiling","UAS Facility Management Flight Ceiling Primary",
+        "UAS Facility Management Flight Ceiling Secondary"
+    ],
+    "domains": {
+        "Roads":[
+            "motorway", "trunk", "primary", "secondary", "tertiary", "unclassified", "residential", "service",
+            "motorway_link", "trunk_link", "primary_link", "secondary_link", "motorway_junction",
+            "living street", "pedestrian", "bicycle road", "cyclestreet", "track", "bus guideway", "busway", "raceway", "road", "construction", "escape",
+            "footway", "cycleway", "bridleway", "path", "steps", "escalator",
+            "sidewalk", "cycleway lane", "cycleway tracks", "bus and cyclists", "lanes:psv"
+        ],
+        "Land use land cover": [
+            "Open Water","Perennial Ice/Snow",
+            "Developed, Open Space","Developed, Low Intensity","Developed, Medium Intensity ","Developed High Intensity",
+            "Barren Land (Rock/Sand/Clay) ","Deciduous Forest","Evergreen Forest","Mixed Forest","Dwarf Scrub","Shrub/Scrub",
+            "Grassland/Herbaceous","Sedge/Herbaceous","Lichens","Moss",
+            "Pasture/Hay","Cultivated Crops ","Woody Wetlands","Emergent Herbaceous Wetlands"
+        ],
+        "UAS Facility Management Flight Ceiling": [],
+        "UAS Facility Management Flight Ceiling Primary": [],
+        "UAS Facility Management Flight Ceiling Secondary": []
+    }
+}
+
