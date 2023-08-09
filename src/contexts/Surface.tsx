@@ -11,7 +11,10 @@ import metadata from '../components/metadata.json';
 // const CLIENT_SECRET=process.env.REACT_APP_CLIENT_SECRET
 // const API_SCOPE='airhub-api/advisory.read'
 
-export const SurfaceContext = createContext<SurfaceInterface>({GeoJSONblob: '', fields: {}, fieldInfos: {}, hexTypes: [], parsedGeoJSON: {type: '', features: []}, blob: new Blob([])})
+export const SurfaceContext = createContext<SurfaceInterface>({
+    GeoJSONblob: '', fields: {}, fieldInfos: {}, hexTypes: [], 
+    parsedGeoJSON: {type: '', features: []}, blob: new Blob([])
+})
 
 const SurfaceProvider = ({ children }) => {
     // @ts-ignore

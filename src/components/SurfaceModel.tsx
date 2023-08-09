@@ -8,7 +8,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
-// import UASrouting from './UASrouting';
+import UASrouting from './UASrouting';
 import { SurfaceContext } from "../contexts/Surface";
 import RemoveSurfaceButton from './RemoveSurfaceButton';
 import SurfaceResolutionSelector from './SurfaceResolutionSelector';
@@ -121,8 +121,10 @@ export const SurfaceModel = () => {
                 }
                 <br />
                 {surface.GeoJSONblob && exportSurfaceButton(surface)}
-                {/*(demoState === 'AirHub SkyPath'||demoState==='AirHub MultiPath'||demoState==='AirHub ReadyToFly') && surface && 
-                    <UASrouting secondaryCallback={secondaryCallback} scene={scene} demoState={demoState} />*/ } 
+                {   (appContext.demoType === 'AirHub SkyPath' 
+                    || appContext.demoType === 'AirHub MultiPath' 
+                    || appContext.demoType === 'AirHub ReadyToFly') 
+                    && surface.GeoJSONblob && <UASrouting /> } 
                 <br />
                 { surface.GeoJSONblob && <RemoveSurfaceButton />}
             </div>

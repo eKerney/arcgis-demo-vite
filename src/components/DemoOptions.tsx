@@ -29,7 +29,7 @@ export const DemoOptions = ({ }) => {
     const drawerWidth = 70;
     const logoStyle = {marginTop: -40, marginBottom: 20, marginRight: 2}
     // const surface = useContext(SurfaceContext);
-    // const { route } = useContext(RouteContext);
+    // const route = useContext(RouteContext);
     // @ts-ignore
     const [appContext, appDispatch] = useContext(AppContext);
     const handleClick = (event, text: string) =>  {

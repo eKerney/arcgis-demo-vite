@@ -1,14 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import DemoCards from "./components/DemoCards"
 import SkyPathDemo from "./components/SkyPathDemo";
 // import ElevateDemo from "./components/ElevateDemo";
-// import MultiPathDemo from "./components/MultiPathDemo";
+import MultiPathDemo from "./components/MultiPathDemo";
 // import ReadyToFlyDemo from "./components/ReadyToFlyDemo";
 import SceneMap from "./components/SceneMap";
-import type { AppContextInterface, CameraPosition, DemoCard, MapContextInterface } from "./types";
+import type { CameraPosition, DemoCard } from "./types";
 import SolutionsSurfaceDemo from "./components/SolutionsSurfaceDemo";
 import { AppContext } from "./contexts/AppStore"; 
-import { MapContext } from "./contexts/MapStore";
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import banner from '../src/assets/Airspace Link Banner.png'
@@ -37,8 +36,6 @@ const darkTheme = createTheme({ palette: { mode: 'dark', }, });
 export const App = () => { 
     // @ts-ignore
     const [appContext, appDispatch] = useContext(AppContext);
-    // @ts-ignore
-    const [mapContext, mapDispatch] = useContext(MapContext);
     
     return (
         <>
@@ -48,7 +45,8 @@ export const App = () => {
             {appContext.demoType === 'DEMO SELECT' && <DemoCards demoCardData={demoCardData}  />}
             {appContext.demoType === 'DEMO SELECT' && <img src={banner} style={bannerStyle} alt='Airspace Link Inc. banner'/> }
             {appContext.demoType === demoCardData[0].name && <SolutionsSurfaceDemo />} 
-            {/* appContext.demoType === demoCardData[2].name && <SkyPathDemo  />*/} 
+            {appContext.demoType === demoCardData[2].name && <SkyPathDemo />} 
+            {appContext.demoType === demoCardData[3].name && <MultiPathDemo />} 
         </ThemeProvider>
         </>
     )

@@ -1,5 +1,5 @@
 import { createContext, useReducer } from "react";
-import { Action, AppAction, AppContextInterface } from "../types";
+import { Action, AppAction, AppContextInterface, CameraPosition } from "../types";
 
 const appActionType: AppAction = {
     DEMOTYPE: 'demoType',
@@ -38,7 +38,7 @@ export const initialAppState: AppContextInterface = {
     scoredFields: [], 
     AOIgeometry: {}, 
     basemap: 'dark-gray-vector',
-    waypointsGeometry: {},
+    waypointsGeometry: [],
     surfaceResolution: 0,
     surfaceRequest: false,
     selectedFields: [],

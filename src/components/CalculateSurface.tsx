@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useState, useContext } from 'react';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -11,9 +10,7 @@ import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import TextField from '@mui/material/TextField';
 import { SurfaceContext } from "../contexts/Surface";
-import PublishIcon from '@mui/icons-material/Publish';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
-// import UASrouting from './UASrouting';
+import UASrouting from './UASrouting';
 import SurfaceResolutionSelector from './SurfaceResolutionSelector';
 import RemoveSurfaceButton from './RemoveSurfaceButton';
 import layersData from '../components/layersData.json';
@@ -212,8 +209,10 @@ const renderLayerScoring = () => {
             && requestSurfaceButton(appDispatch)
         }
         {surface.GeoJSONblob && exportSurfaceButton(surface)}
-        {/*(demoState === 'AirHub SkyPath'||demoState==='AirHub MultiPath'||demoState==='AirHub ReadyToFly') && surface && 
-            <UASrouting secondaryCallback={secondaryCallback} scene={scene} demoState={demoState} /> */} 
+        {   (appContext.demoType === 'AirHub SkyPath' 
+            || appContext.demoType === 'AirHub MultiPath' 
+            || appContext.demoType === 'AirHub ReadyToFly') 
+            && surface.GeoJSONblob && <UASrouting /> } 
         <br />
         { surface.GeoJSONblob && <RemoveSurfaceButton />}
     </div>

@@ -13,7 +13,7 @@ import { MapContext } from '../contexts/MapStore';
 export const UASrouting = () => {
   const route = useContext(RouteContext)
   const [waypoints, setWaypoints] = useState <Array<Array<number>>>([])
-  const [sketchWidgetState, setSketchWidgetState] = useState(false)
+  const [sketchWidgetState, setSketchWidgetState] = useState({sketchWidget: false, multiRouteSubmit: false})
     // @ts-ignore
     const [appContext, appDispatch] = useContext(AppContext);
     // @ts-ignore
@@ -21,10 +21,15 @@ export const UASrouting = () => {
   
   // if 2 waypoints for start/end then set geometry in callback
     useEffect(() => {
+        // If SkyPath Demo submit waypoints when origin and destination have been entered
         appContext.demoType ==='AirHub SkyPath' 
         && waypoints.length === 2 
         && appDispatch({ type: 'waypointsGeometry', payload: waypoints })
-    }, [waypoints])
+        // if MultiPath Demo wait until Request Route Button clicked
+        appContext.demoType ==='AirHub MultiPath' 
+        && sketchWidgetState.multiRouteSubmit
+        && appDispatch({ type: 'waypointsGeometry', payload: waypoints })
+    }, [waypoints, sketchWidgetState.multiRouteSubmit])
 
     const enterWaypointsButton = () => {
                 // remove existing polygon sketch widget
@@ -47,7 +52,7 @@ export const UASrouting = () => {
                         setWaypoints((waypoints: number[][]) => [...waypoints, [x, y, z]])
                     }
                 });
-                setSketchWidgetState(true)
+                setSketchWidgetState({...sketchWidgetState, sketchWidget: true})
     }; 
 
     const exportRouteData = () => {
@@ -56,19 +61,11 @@ export const UASrouting = () => {
         link.href = route.routeBlob 
         link.click()
     }
-    const multiRouteRequest = () => setWaypoints(waypoints)
-    
-    // const multiRouteButton = () => (
-    //     <Box textAlign='center'>
-    //         <br />  
-    //         <Button 
-    //             variant="contained" 
-    //             startIcon={<DownloadIcon />}
-    //             onClick={multiRouteRequest}>
-    //             Request Route
-    //         </Button> 
-    //     </Box>
-    //     )
+
+    const multiRouteRequest = () => {
+        setSketchWidgetState({...sketchWidgetState, multiRouteSubmit: true})
+        setWaypoints(waypoints)
+    }
     
     const multiFunctionButton = (icon, onClickFunction, buttonText: string) => (
         <Box textAlign='center'>
@@ -89,12 +86,14 @@ export const UASrouting = () => {
             <Box textAlign='center'>
                 <hr />
                 <br />  
-                { !sketchWidgetState && multiFunctionButton(<RoomIcon />, (enterWaypointsButton), 'Enter Waypoints')}
+                { !sketchWidgetState.sketchWidget 
+                  && multiFunctionButton(<RoomIcon />, (enterWaypointsButton), 'Enter Waypoints')}
                 <br />  
                 { (appContext.demoType ==='AirHub MultiPath' || appContext.demoType ==='AirHub ReadyToFly') 
                   && multiFunctionButton(<DownloadIcon/>, (multiRouteRequest), 'Request Route')}
                 <br />  
-                { (route.routeGeoJSON.features.length !== 0) && multiFunctionButton(<DownloadIcon/>, (exportRouteData), 'Export Route') }
+                { (route.routeGeoJSON.features.length !== 0) 
+                  && multiFunctionButton(<DownloadIcon/>, (exportRouteData), 'Export Route') }
             </Box>
         </>
     )

@@ -25,7 +25,7 @@ export interface AppContextInterface {
     scoredFields?: Object[]; 
     AOIgeometry?: Object; 
     basemap?: string;
-    waypointsGeometry?: Object;
+    waypointsGeometry?: Array;
     surfaceResolution?: number;
     surfaceRequest?: Boolean;
     selectedFields?: Object[];
@@ -38,10 +38,16 @@ export interface MapContextInterface {
     graphicsLayer?: __esri.GraphicsLayer;
 }
 
+export type GeoJSONprops = {
+    SCORE?: string;
+    id?: string;
+}
+
 export interface FeatureInterface {
     type: string;
     geometry: Object
-    properties?: Object;
+    id?: string;
+    properties: GeoJSONprops;
 }
 
 export interface GeoJSONinterface {
@@ -50,12 +56,17 @@ export interface GeoJSONinterface {
 }
 
 export interface SurfaceInterface {
-    GeoJSONblob?: string;
-    fields?: Object;
+    GeoJSONblob: string;
+    fields: Object;
+    parsedGeoJSON: GeoJSONinterface;
     fieldInfos?: Object;
     hexTypes?: number[];
-    parsedGeoJSON?: GeoJSONinterface;
     blob?: Blob;
+}
+
+export interface RouteInterface {
+    routeBlob: blob;
+    routeGeoJSON: GeoJSONinterface
 }
 
 export interface SurfaceData {
