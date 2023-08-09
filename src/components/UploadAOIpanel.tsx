@@ -7,8 +7,6 @@ import { AppContext } from '../contexts/AppStore';
 // import { DemoContext } from '../contexts/DemoContext';
 
 export const UploadAOIpanel = () => {
-  // const { demo } = useContext(DemoContext);
-    // const [demoContextData, setDemoContextData] = useState(demo);
   // @ts-ignore
   const [appContext, appDispatch] = useContext(AppContext);
   const [files, setFiles] = useState([]);
@@ -17,13 +15,14 @@ export const UploadAOIpanel = () => {
     const reader = new FileReader();
     reader.onload = (evt) => {
         const parsedData = JSON.parse(evt.target.result);
-        setDemoContextData({...demo, AOIgeometry: parsedData.features[0].geometry.coordinates[0]})
-        geometryCallback(parsedData.features[0].geometry.coordinates[0])
-        console.log('demoContextData', demoContextData);
+        appDispatch({ type: 'AOIgeometry', payload: parsedData.features[0].geometry.coordinates[0] })
+        // setDemoContextData({...demo, AOIgeometry: parsedData.features[0].geometry.coordinates[0]})
+        // geometryCallback(parsedData.features[0].geometry.coordinates[0])
     }
     files.length ? reader.readAsText(files[0]) : console.log('none');
   }, [files])
 
+// @ts-ignore
   const handleFileUpload = (event) => setFiles(event)
 
 // primary return

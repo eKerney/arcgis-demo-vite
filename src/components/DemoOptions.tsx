@@ -17,41 +17,24 @@ import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import SelectDataSurface from './SelectDataSurface';
 import ClassifySurface from './ClassifySurface';
 import CalculateSurface from './CalculateSurface';
-// import SurfaceModel from './SurfaceModel';
+import SurfaceModel from './SurfaceModel';
 import { Tooltip } from '@mui/material';
 import logo from '../assets/ASLLogoStack.png'
-import { SurfaceContext } from "../contexts/Surface";
 import { AppContext } from "../contexts/AppStore";
 // import ElevatePanel from "./ElevatePanel";
 // import { RouteContext } from "../contexts/Route";
-// import UploadAOIpanel from "./UploadAOIpanel";
+import UploadAOIpanel from "./UploadAOIpanel";
 
 export const DemoOptions = ({ }) => {
     const drawerWidth = 70;
     const logoStyle = {marginTop: -40, marginBottom: 20, marginRight: 2}
-    const surface = useContext(SurfaceContext);
+    // const surface = useContext(SurfaceContext);
     // const { route } = useContext(RouteContext);
-    const [files, setFiles] = useState([]);
     // @ts-ignore
     const [appContext, appDispatch] = useContext(AppContext);
-
     const handleClick = (event, text: string) =>  {
         appDispatch({ type: 'demoPanel', payload: text.toUpperCase() });
     }
-
-    //file upload working section
-    useEffect(() => {
-        const reader = new FileReader();
-        reader.onload = (evt) => {
-          const parsedData = JSON.parse(evt.target.result)
-          const blob = new Blob([JSON.stringify(parsedData)], { type: "application/json" });
-          // setElevateOptions( {...elevateOptions, GeoJSON: parsedData} )
-          return URL.createObjectURL(blob);
-        }
-        files.length ? reader.readAsText(files[0]) : console.log('none');
-    }, [files])
-
-  const handleFileUpload = (event: Event) => setFiles(event)
 
   const demoOptionsList = [
     ...((appContext.demoType ==='AirHub SkyPath' || appContext.demoType==='AirHub Elevate' || appContext.demoType==='AirHub MultiPath' 
@@ -83,12 +66,12 @@ export const DemoOptions = ({ }) => {
             ? <ClassifySurface /> 
             : appContext.demoPanel === 'CALCULATE SURFACE' 
             ? <CalculateSurface /> 
-            // : appContextData.demoPanel === 'SURFACE DATA MODEL' 
-            // ? <SurfaceModel geometryCallback={geometryCallback} demoState={appContextData.demoType} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
+            : appContext.demoPanel === 'SURFACE DATA MODEL' 
+            ? <SurfaceModel /> 
             // : appContextData.demoPanel === 'AirHub Elevate' 
             // ? <ElevatePanel onDemoSelect={onDemoSelect} elevateParamsCallback={elevateParamsCallback} /> 
-            // : appContextData.demoPanel === 'UPLOAD AOI GEOMETRY' 
-            // ? <UploadAOIpanel onDemoSelect={onDemoSelect} elevateParamsCallback={elevateParamsCallback} geometryCallback={geometryCallback}/> 
+            : appContext.demoPanel === 'UPLOAD AOI GEOMETRY' 
+            ? <UploadAOIpanel /> 
             : <></>
         )    
     }
