@@ -23,8 +23,6 @@ const SurfaceProvider = ({ children }) => {
     const [loading, setLoading] = useState<Boolean>(true);
 
     const fetchSurface = useCallback(async () => {
-      console.log('fetchSurface');
-      console.log(appContext.surfaceRequest);
       setLoading(true)
       let requestData = { 
         "resolution": appContext.surfaceResolution, 
@@ -42,8 +40,12 @@ const SurfaceProvider = ({ children }) => {
                 appContext.scoredFields.forEach(d => {
                     // special cases for calculated value layers 
                     const field = ((d.field).split('_'))[0];
-                    const funcExpr = metadata[field].CODE === 'roads' ? d.func.join("|")
-                        : d.func
+                    const funcExpr = metadata[field].CODE === 'roads' 
+                        ? d.func.join("|")
+                        : d.valueCalc === true 
+                            ? (`lambda x: 1 if ${d.func} else None`)
+                            : d.func
+
                     // if layer contains objectid then use objectid as attribute>
                     // else use first attribute in attribute array
                     const feature = {
@@ -84,7 +86,6 @@ const SurfaceProvider = ({ children }) => {
               console.log('request', requestData);
                 axios(config)
                   .then(function (response) {
-                      console.log('ran request');
                     // parse reqeust from API as GeoJSON
                     const parsedGeoJSON: GeoJSONinterface = JSON.parse(response.data);
                     // extract feature properties from GeoJSON.features[0]
@@ -115,7 +116,6 @@ const SurfaceProvider = ({ children }) => {
                     })
                     setLoading(false)
                     appDispatch({ type: 'surfaceRequest', payload: false })
-                    console.log('in change state portion')
                   })
                   .catch(function (error: Error) {
                     console.log(error);

@@ -1,24 +1,15 @@
-import { useContext } from "react"
-import { SurfaceContext } from "../contexts/Surface"
-import { AppContextInterface } from "../types";
+import { AppContextInterface, SurfaceInterface } from "../types";
 
-export const exportSurfaceData = () => {
-    const surface = useContext(SurfaceContext);
+export const exportSurfaceData = (surface: SurfaceInterface) => {
     const link = document.createElement("a")
     link.download = "surfaceData.geojson"
     link.href = surface.GeoJSONblob
     link.click()
 }
 
-export const submitSurfaceFields = (appContext: AppContextInterface, appDispatch)  => {
-    appDispatch({ type: 'surfaceData', 
-                payload: { 
-                    scoredFields: appContext.scoredFields, 
-                    demoPanel: appContext.demoPanel, 
-                    surfaceResolution: appContext.surfaceResolution,
-                    surfaceRequest: true,
-                } 
-    }) 
+export const submitSurfaceFields = (appContext: AppContextInterface, appDispatch) => {
+    console.log('utils', appContext);
+    appDispatch({ type: 'surfaceRequest', payload: true }) 
 };
 
 export const MenuProps = {

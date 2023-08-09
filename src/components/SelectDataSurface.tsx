@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {useState, useContext } from 'react';
 import { SurfaceContext } from '../contexts/Surface';
@@ -25,16 +25,19 @@ export const SelectDataSurface = ({}) => {
     const [selectedFields, setSelectedFields] = useState(appContext.selectedFields);
     const [scoredFields, setScoredFields] = useState(appContext.scoredFields); 
     const layers = ((layersData.layers.filter(d => !layersData.excludeClassify.includes(d))).filter(d => !layersData.problemLayers.includes(d))).sort();
-    // NOTE: Look to remove need for surfaceResolutionCallback in future 
     const setHeight = () => selectedFields.length === 0 ? '500px' : (`${selectedFields.length*48+380}px`)  
 
     const handleFieldChange = ({ target: { value }, }) => {
         setSelectedFields( typeof value === 'string' ? value.split(',') : value,);
-        setScoredFields(value.map((field: any) => ({field: field, score: 'HIGH', func: []})));
-        appDispatch({ type: 'scoredFields', payload: scoredFields })
-        appDispatch({ type: 'selectedFields', payload: selectedFields })
+        setScoredFields(value.map((field: any) => ({field: field, score: 'HIGH', func: [], valueCalc: false})));
         console.log('selectData', appContext);
     };
+
+    // forces appContext to be current for surface request
+    useEffect(() => {
+        appDispatch({ type: 'scoredFields', payload: scoredFields })
+        appDispatch({ type: 'selectedFields', payload: selectedFields })
+    }, [selectedFields, scoredFields] )
 
     return  (
   <>
@@ -77,11 +80,14 @@ export const SelectDataSurface = ({}) => {
     <Box textAlign='center'>
         <SurfaceResolutionSelector /> 
         <br />  
-        {(scoredFields && appContext.surfaceResolution !==0 && appContext.AOIgeometry.length > 0) && requestSurfaceButton(appContext, appDispatch)}
+        {(scoredFields && appContext.surfaceResolution !==0 
+            && Object.keys(appContext.AOIgeometry).length !== 0 ) 
+            && requestSurfaceButton(appDispatch)
+        }
         <br />  
-        {surface.GeoJSONblob && exportSurfaceButton()}
+        {surface.GeoJSONblob && exportSurfaceButton(surface)}
         <br />
-        { surface.GeoJSONblob && <RemoveSurfaceButton currentDemoPanel={appContext.demoPanel}/>}
+        { surface.GeoJSONblob && <RemoveSurfaceButton />}
     </Box>
     </div>
   </>

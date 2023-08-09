@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -27,12 +27,16 @@ export const ClassifySurface = () => {
     const layers = ((layersData.layers.filter(d => !layersData.excludeClassify.includes(d))).filter(d => !layersData.problemLayers.includes(d))).sort();
     const setHeight = () => selectedFields.length === 0 ? '400px' : (`${selectedFields.length*100+480}px`)  
 
+    // force appContext to be set before surface request
+    useEffect(() => {
+        appDispatch({ type: 'scoredFields', payload: scoredFields })
+        appDispatch({ type: 'selectedFields', payload: selectedFields })
+    }, [selectedFields, scoredFields] )
+
     // set selectedFields state when added to chip selector
     const handleFieldChange = ({ target: { value }, }) => {
         setSelectedFields( typeof value === 'string' ? value.split(',') : value,);
-        setScoredFields(value.map((field: any) => ({field: field, score: 'LOW', func: []})));
-        appDispatch({ type: 'scoredFields', payload: scoredFields })
-        appDispatch({ type: 'selectedFields', payload: selectedFields })
+        setScoredFields(value.map((field: any) => ({field: field, score: 'LOW', func: [], valueCalc: false})));
     };
 
     const handleScoreChange = ({ target: { value, name}, }) => {
@@ -43,8 +47,6 @@ export const ClassifySurface = () => {
                 : {...scoredField }
         ));
         console.log(scoredFields)
-        appDispatch({ type: 'scoredFields', payload: scoredFields })
-        appDispatch({ type: 'selectedFields', payload: selectedFields })
     }
 
     // render UI for Layer Select 
@@ -121,9 +123,12 @@ export const ClassifySurface = () => {
                 {renderLayerScoring()}
                 <SurfaceResolutionSelector /> 
                 <br />
-                {(scoredFields && appContext.surfaceResolution !==0) && requestSurfaceButton(appContext, appDispatch)}
+                {(scoredFields && appContext.surfaceResolution !==0 
+                    && Object.keys(appContext.AOIgeometry).length !== 0 ) 
+                    && requestSurfaceButton(appDispatch)
+                }
                 <br />
-                {surface.GeoJSONblob && exportSurfaceButton()}
+                {surface.GeoJSONblob && exportSurfaceButton(surface)}
                 {/*(demoState === 'AirHub SkyPath'||demoState==='AirHub MultiPath'||demoState==='AirHub ReadyToFly') && surface && 
                     <UASrouting secondaryCallback={secondaryCallback} scene={scene} demoState={demoState} />*/ } 
                 <br />

@@ -16,7 +16,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import SelectDataSurface from './SelectDataSurface';
 import ClassifySurface from './ClassifySurface';
-// import CalculateSurface from './CalculateSurface';
+import CalculateSurface from './CalculateSurface';
 // import SurfaceModel from './SurfaceModel';
 import { Tooltip } from '@mui/material';
 import logo from '../assets/ASLLogoStack.png'
@@ -81,8 +81,8 @@ export const DemoOptions = ({ }) => {
             ? <SelectDataSurface /> 
             : appContext.demoPanel === 'CLASSIFY SURFACE'
             ? <ClassifySurface /> 
-            // : appContextData.demoPanel === 'CALCULATE SURFACE' 
-            // ? <CalculateSurface geometryCallback={geometryCallback} demoState={appContextData.demoType} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
+            : appContext.demoPanel === 'CALCULATE SURFACE' 
+            ? <CalculateSurface /> 
             // : appContextData.demoPanel === 'SURFACE DATA MODEL' 
             // ? <SurfaceModel geometryCallback={geometryCallback} demoState={appContextData.demoType} onDemoSelect={onDemoSelect} secondaryCallback={secondaryCallback} scene={scene} /> 
             // : appContextData.demoPanel === 'AirHub Elevate' 
